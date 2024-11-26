@@ -2,6 +2,8 @@ package ru.efimov.DiplomFirst.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,21 +23,25 @@ public class CloseMaterial {
     @JsonIgnore
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "student_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Student student;
 
-    @ManyToOne
-    @JoinColumn(name = "id", nullable = false, insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "material_id", nullable = false)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JsonIgnore
     private Material material;
 
     @Column(nullable = false)
-    private LocalDateTime Date_of_close;
+    private LocalDateTime date_of_close;
 
-    public CloseMaterial(Student student, Material material, LocalDateTime Date_of_close) {
+    public CloseMaterial(Student student, Material material, LocalDateTime date_of_close) {
         this.student = student;
         this.material = material;
-        this.Date_of_close = Date_of_close;
+        this.date_of_close = date_of_close;
     }
 
 
