@@ -15,7 +15,7 @@ public class DiplomFirstApplication {
 /*
 http://localhost:8083/login
 
-{"username":"Alex", "password":"hco74h"}
+{"username":"Alex", "password":"efefef"}
 
 
 http://localhost:8083/api/materials
@@ -72,3 +72,5 @@ http://localhost:8083/api/students/1/closeMaterials/44
 "material":{"id":44, "title":"title2", "description":"description2"}
 , "date_of_close":"2024-02-10T13:00:00"}
  */
+
+// { "date_of_error":"2024-02-10T13:45:00", "count_errors":12}
