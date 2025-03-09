@@ -9,7 +9,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 public interface ProfileAnalyzeRepository extends JpaRepository<ProfileAnalyze, Long> {
-    List<Enter> findByStudentId(Long studentId);
+    List<ProfileAnalyze> findByStudentId(Long studentId);
 
     @Transactional
     void deleteByStudentId(long studentId);

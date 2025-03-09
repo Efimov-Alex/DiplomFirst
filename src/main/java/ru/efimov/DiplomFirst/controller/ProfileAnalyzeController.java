@@ -28,7 +28,7 @@ public class ProfileAnalyzeController {
 
 
     @GetMapping("/profileAnalyze/{id}")
-    public ResponseEntity<ProfileAnalyze> getprofileAnalyzeыByStudentId(@PathVariable(value = "id") Long id) {
+    public ResponseEntity<ProfileAnalyze> getprofileAnalyzeByStudentId(@PathVariable(value = "id") Long id) {
         ProfileAnalyze profileAnalyze = profileAnalyzeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found ProfileAnalyze with id = " + id));
 
