@@ -7,10 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.efimov.DiplomFirst.entity.MaterialAnalyze;
 import ru.efimov.DiplomFirst.entity.TaskAnalyze;
-import ru.efimov.DiplomFirst.repository.MaterialAnalyzeRepository;
-import ru.efimov.DiplomFirst.repository.MaterialRepository;
-import ru.efimov.DiplomFirst.repository.TaskAnalyzeRepository;
-import ru.efimov.DiplomFirst.repository.TaskRepository;
+import ru.efimov.DiplomFirst.entity.TaskError;
+import ru.efimov.DiplomFirst.repository.*;
 
 import java.util.List;
 
@@ -22,8 +20,29 @@ public class TaskAnalyzeController {
     private TaskRepository taskRepository;
 
     @Autowired
+    private TaskErrorRepository taskErrorRepository;
+
+    @Autowired
     private TaskAnalyzeRepository taskAnalyzeRepository;
 
+
+    @GetMapping("/tasks/{taskId}/taskErrors")
+    public ResponseEntity<Float> getAverageErrors(@PathVariable(value = "taskId") Long taskId
+                                                        ) {
+        List<TaskError> taskErrors = taskErrorRepository.findByTaskId(taskId);
+        int lengthList = taskErrors.size();
+        float totalSum = 0;
+        for (TaskError t1 : taskErrors){
+            totalSum += t1.getCount_errors();
+        }
+
+        float averageCount = (float) totalSum / lengthList;
+
+
+
+
+        return new ResponseEntity<>(averageCount, HttpStatus.CREATED);
+    }
 
 
 
@@ -52,9 +71,10 @@ public class TaskAnalyzeController {
         TaskAnalyze taskAnalyze = taskAnalyzeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("TaskAnalyzeId " + id + "not found"));
 
-        taskAnalyze.setDescripation(taskAnalyzeRequest.getDescripation());
-        taskAnalyze.setCharacteristic(taskAnalyzeRequest.getCharacteristic());
-        taskAnalyze.setValue(taskAnalyzeRequest.getValue());
+        taskAnalyze.setMean_time(taskAnalyzeRequest.getMean_time());
+        taskAnalyze.setCreation_time(taskAnalyzeRequest.getCreation_time());
+        taskAnalyze.setDeadline(taskAnalyzeRequest.getDeadline());
+        taskAnalyze.setCount_error(taskAnalyzeRequest.getCount_error());
 
         return new ResponseEntity<>(taskAnalyzeRepository.save(taskAnalyze), HttpStatus.OK);
     }

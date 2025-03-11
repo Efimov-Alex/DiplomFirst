@@ -30,19 +30,11 @@ public class MaterialAnalyze {
     private Material material;
 
     @Column(nullable = false)
-    private String descripation;
+    private Float mean_time;
 
-    @Column(nullable = false)
-    private String characteristic;
-
-    @Column(nullable = false)
-    private String value;
-
-    public MaterialAnalyze(Material material, String descripation, String characteristic, String value) {
+    public MaterialAnalyze(Material material, Float mean_time) {
         this.material = material;
-        this.descripation = descripation;
-        this.characteristic = characteristic;
-        this.value = value;
+        this.mean_time = mean_time;
     }
 }
 

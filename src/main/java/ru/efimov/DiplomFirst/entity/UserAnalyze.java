@@ -15,8 +15,8 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Entity
 @Builder
-@Table(name = "taskanalyze")
-public class TaskAnalyze {
+@Table(name = "useranalyze")
+public class UserAnalyze {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(nullable = false)
@@ -24,32 +24,25 @@ public class TaskAnalyze {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "task_id", nullable = false)
+    @JoinColumn(name = "student_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     @JsonIgnore
-    private Task task;
+    private Student student;
 
     @Column(nullable = false)
-    private Float mean_time;
-
-    @CreationTimestamp
-    @Column(nullable = false)
-    private LocalDateTime creation_time;
-
-    @CreationTimestamp
-    @Column(nullable = false)
-    private LocalDateTime deadline;
+    private Integer atribute_id;
 
     @Column(nullable = false)
-    private Float count_error;
+    private String characteristic;
 
-    public TaskAnalyze(Task task, Float mean_time, LocalDateTime creation_time, LocalDateTime deadline, Float count_error) {
-        this.task = task;
-        this.mean_time = mean_time;
-        this.creation_time = creation_time;
-        this.deadline = deadline;
-        this.count_error = count_error;
+    @Column(nullable = false)
+    private String value;
+
+    public UserAnalyze(Student student, Integer atribute_id, String characteristic, String value) {
+        this.student = student;
+        this.atribute_id = atribute_id;
+        this.characteristic = characteristic;
+        this.value = value;
     }
 }
-
 

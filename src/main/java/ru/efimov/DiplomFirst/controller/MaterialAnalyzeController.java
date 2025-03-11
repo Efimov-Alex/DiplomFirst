@@ -52,9 +52,7 @@ public class MaterialAnalyzeController {
         MaterialAnalyze materialAnalyze = materialAnalyzeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("MaterialAnalyzeId " + id + "not found"));
 
-        materialAnalyze.setDescripation(materialAnalyzeRequest.getDescripation());
-        materialAnalyze.setCharacteristic(materialAnalyzeRequest.getCharacteristic());
-        materialAnalyze.setValue(materialAnalyzeRequest.getValue());
+        materialAnalyze.setMean_time(materialAnalyzeRequest.getMean_time());
 
         return new ResponseEntity<>(materialAnalyzeRepository.save(materialAnalyze), HttpStatus.OK);
     }

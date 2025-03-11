@@ -71,6 +71,15 @@ http://localhost:8083/api/students/1/closeMaterials/44
 {"student":{"id":1, "username":"John","password":"dodhf34","date_of_registration":"2024-11-10T16:47:00"},
 "material":{"id":44, "title":"title2", "description":"description2"}
 , "date_of_close":"2024-02-10T13:00:00"}
+
+http://localhost:8083/api/materials/67/materialAnalyzes/
+
+{"mean_time":30.0}
+
+
+http://localhost:8083/api/tasks/56/taskAnalyzes
+
+{"mean_time":45.7, "creation_time":"2025-03-11T13:00:00", "deadline":"2025-03-12T13:45:00","count_error":3.6}
  */
 
 // { "date_of_error":"2024-02-10T13:45:00", "count_errors":12}
