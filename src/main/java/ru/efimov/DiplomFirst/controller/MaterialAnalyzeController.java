@@ -5,14 +5,12 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.efimov.DiplomFirst.entity.MaterialAnalyze;
-import ru.efimov.DiplomFirst.entity.ProfileAnalyze;
-import ru.efimov.DiplomFirst.repository.MaterialAnalyzeRepository;
-import ru.efimov.DiplomFirst.repository.MaterialRepository;
-import ru.efimov.DiplomFirst.repository.ProfileAnalyzeRepository;
-import ru.efimov.DiplomFirst.repository.StudentRepository;
+import ru.efimov.DiplomFirst.entity.*;
+import ru.efimov.DiplomFirst.repository.*;
 
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
 
 @CrossOrigin(origins = "http://localhost:8083")
 @RestController
@@ -23,6 +21,99 @@ public class MaterialAnalyzeController {
 
     @Autowired
     private MaterialAnalyzeRepository materialAnalyzeRepository;
+
+
+    @Autowired
+    private OpenMaterialRepository openMaterialRepository;
+
+    @Autowired
+    private CloseMaterialRepository closeMaterialRepository;
+
+
+
+
+
+
+    @GetMapping("/materials/{materialId}/metrics")
+    public ResponseEntity<MaterialAnalyze> getMaterialMetrics(@PathVariable(value = "materialId") Long materialId
+    ) {
+        List<MaterialAnalyze> materialAnalyzes = materialAnalyzeRepository.findByMaterialId(materialId);
+
+        if (materialAnalyzes.size() != 1){
+            throw new ResourceNotFoundException("Not found materialAnalyze with materialId = " + materialId);
+        }
+        MaterialAnalyze oldMaterialAnalyze = materialAnalyzes.get(0);
+
+        List<OpenMaterial> openMaterials = openMaterialRepository.findByMaterialId(materialId);
+        List<CloseMaterial> closeMaterials = closeMaterialRepository.findByMaterialId(materialId);
+
+        Collections.sort(openMaterials, new Comparator<OpenMaterial>() {
+            @Override
+            public int compare(OpenMaterial a1, OpenMaterial a2) {
+                return a1.getDate_of_open().compareTo(a2.getDate_of_open());
+            }
+        });
+
+        Collections.sort(closeMaterials, new Comparator<CloseMaterial>() {
+            @Override
+            public int compare(CloseMaterial a1, CloseMaterial a2) {
+                return a1.getDate_of_close().compareTo(a2.getDate_of_close());
+            }
+        });
+
+        HashMap<Long, List<OpenMaterial>> map = new HashMap<>();
+
+        for (OpenMaterial o1 : openMaterials){
+            if (!map.containsKey(o1.getStudent().getId())){
+                List<OpenMaterial> list1 = new ArrayList<>();
+                list1.add(o1);
+                map.put(o1.getStudent().getId(), list1);
+            }
+            else{
+                List<OpenMaterial> list1 = map.get(o1.getStudent().getId());
+                list1.add(0, o1);
+                map.put(o1.getStudent().getId(), list1);
+            }
+        }
+
+        long totalTimeSum = 0;
+        long timeCount = 0;
+
+        for (CloseMaterial o1 : closeMaterials){
+            if (!map.containsKey(o1.getStudent().getId())){
+                continue;
+            }
+            else{
+                List<OpenMaterial> list1 = map.get(o1.getStudent().getId());
+                OpenMaterial o2 = list1.remove(list1.size()-1);
+                map.put(o1.getStudent().getId(), list1);
+
+                if (o2.getDate_of_open().compareTo(o1.getDate_of_close()) > 0){
+                    continue;
+                }
+                long minutes = ChronoUnit.MINUTES.between(o2.getDate_of_open(), o1.getDate_of_close());
+                System.out.println(minutes);
+                System.out.println(o2.getDate_of_open());
+                System.out.println(o1.getDate_of_close());
+                totalTimeSum += minutes;
+                timeCount += 1;
+            }
+        }
+        MaterialAnalyze newMaterialAnalyze = new MaterialAnalyze();
+        newMaterialAnalyze.setId(oldMaterialAnalyze.getId());
+        newMaterialAnalyze.setMaterial(oldMaterialAnalyze.getMaterial());
+        newMaterialAnalyze.setMean_time(oldMaterialAnalyze.getMean_time());
+
+        float averageTime = (float) totalTimeSum / timeCount;
+        newMaterialAnalyze.setMean_time(averageTime);
+
+
+        materialAnalyzeRepository.save(newMaterialAnalyze);
+
+
+
+        return new ResponseEntity<>(newMaterialAnalyze, HttpStatus.CREATED);
+    }
 
 
 

@@ -32,11 +32,9 @@ public class TaskAnalyze {
     @Column(nullable = false)
     private Float mean_time;
 
-    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime creation_time;
 
-    @CreationTimestamp
     @Column(nullable = false)
     private LocalDateTime deadline;
 

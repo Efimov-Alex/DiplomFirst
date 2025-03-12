@@ -8,8 +8,11 @@ import org.springframework.web.bind.annotation.*;
 import ru.efimov.DiplomFirst.entity.MaterialAnalyze;
 import ru.efimov.DiplomFirst.entity.TaskAnalyze;
 import ru.efimov.DiplomFirst.entity.TaskError;
+import ru.efimov.DiplomFirst.entity.TaskPassed;
 import ru.efimov.DiplomFirst.repository.*;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:8083")
@@ -21,6 +24,9 @@ public class TaskAnalyzeController {
 
     @Autowired
     private TaskErrorRepository taskErrorRepository;
+
+    @Autowired
+    private TaskPassedRepository taskPassedRepository;
 
     @Autowired
     private TaskAnalyzeRepository taskAnalyzeRepository;
@@ -38,10 +44,69 @@ public class TaskAnalyzeController {
 
         float averageCount = (float) totalSum / lengthList;
 
-
-
-
         return new ResponseEntity<>(averageCount, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/tasks/{taskId}/metrics")
+    public ResponseEntity<TaskAnalyze> getTaskMetrics(@PathVariable(value = "taskId") Long taskId
+    ) {
+        List<TaskAnalyze> taskAnalyzes = taskAnalyzeRepository.findByTaskId(taskId);
+
+        if (taskAnalyzes.size() != 1){
+            throw new ResourceNotFoundException("Not found taskAnalyze with taskId = " + taskId);
+        }
+        TaskAnalyze oldTaskAnalyze = taskAnalyzes.get(0);
+
+        TaskAnalyze newTaskAnalyze = new TaskAnalyze();
+        newTaskAnalyze.setDeadline(oldTaskAnalyze.getDeadline());
+        newTaskAnalyze.setId(oldTaskAnalyze.getId());
+        newTaskAnalyze.setTask(oldTaskAnalyze.getTask());
+        newTaskAnalyze.setCreation_time(oldTaskAnalyze.getCreation_time());
+
+
+        List<TaskError> taskErrors = taskErrorRepository.findByTaskId(taskId);
+        int lengthList = taskErrors.size();
+        float totalSum = 0;
+        for (TaskError t1 : taskErrors){
+            totalSum += t1.getCount_errors();
+        }
+
+        float averageCount = (float) totalSum / lengthList;
+
+        newTaskAnalyze.setCount_error(averageCount);
+
+        List<TaskPassed> taskPasseds = taskPassedRepository.findByTaskId(taskId);
+
+        long totalTimeSum = 0;
+        long timeCount = 0;
+
+        for(TaskPassed t1 : taskPasseds){
+            LocalDateTime l1 = t1.getDate_of_passed();
+            if (l1.compareTo(newTaskAnalyze.getDeadline()) > 0){
+                continue;
+            }
+            if (l1.compareTo(newTaskAnalyze.getCreation_time()) < 0){
+                continue;
+            }
+
+            long minutes = ChronoUnit.MINUTES.between(newTaskAnalyze.getCreation_time(), l1);
+            System.out.println(minutes);
+            System.out.println(newTaskAnalyze.getCreation_time());
+            System.out.println(l1);
+            totalTimeSum += minutes;
+            timeCount += 1;
+
+        }
+
+        float averageTime = (float) totalTimeSum / timeCount;
+        newTaskAnalyze.setMean_time(averageTime);
+
+
+        taskAnalyzeRepository.save(newTaskAnalyze);
+
+
+
+        return new ResponseEntity<>(newTaskAnalyze, HttpStatus.CREATED);
     }
 
 
