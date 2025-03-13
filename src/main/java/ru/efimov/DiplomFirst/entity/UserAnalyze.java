@@ -29,8 +29,6 @@ public class UserAnalyze {
     @JsonIgnore
     private Student student;
 
-    @Column(nullable = false)
-    private Integer atribute_id;
 
     @Column(nullable = false)
     private String characteristic;
@@ -38,9 +36,8 @@ public class UserAnalyze {
     @Column(nullable = false)
     private String value;
 
-    public UserAnalyze(Student student, Integer atribute_id, String characteristic, String value) {
+    public UserAnalyze(Student student, String characteristic, String value) {
         this.student = student;
-        this.atribute_id = atribute_id;
         this.characteristic = characteristic;
         this.value = value;
     }
