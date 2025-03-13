@@ -10,6 +10,8 @@ import ru.efimov.DiplomFirst.repository.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -81,6 +83,8 @@ public class UserAnalyzeController {
 
         HashMap<Long, Integer> mapAttemptsPerTask = new HashMap<>();
 
+
+
         UserAnalyze newUserAnalyzeFailAttempts= null;
 
         for (UserAnalyze u1 : userAnalyzes){
@@ -119,6 +123,69 @@ public class UserAnalyzeController {
         userAnalyzeRepository.save(newUserAnalyzeFailAttempts);
 
         result += " Average Count Failed Attempts - " + averageFailedAttempt;
+
+
+
+        HashMap<Long, List<LocalDateTime>> mapTimesPerTask = new HashMap<>();
+
+        UserAnalyze newUserAnalyzeTimesRepairError = null;
+
+        for (UserAnalyze u1 : userAnalyzes){
+            if (u1.getCharacteristic().equals("Время между неуспешными попытками")){
+                newUserAnalyzeTimesRepairError = new UserAnalyze();
+                newUserAnalyzeTimesRepairError.setId(u1.getId());
+                newUserAnalyzeTimesRepairError.setStudent(u1.getStudent());
+                newUserAnalyzeTimesRepairError.setCharacteristic(u1.getCharacteristic());
+                newUserAnalyzeTimesRepairError.setValue(u1.getValue());
+            }
+        }
+
+        if (newUserAnalyzeTimesRepairError == null){
+            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время между неуспешными попытками");
+        }
+
+
+        for (TaskError t1 : taskErrors){
+            if (!mapTimesPerTask.containsKey(t1.getTask().getId())){
+                List<LocalDateTime> newList = new ArrayList<>();
+                newList.add(t1.getDate_of_error());
+
+                mapTimesPerTask.put(t1.getTask().getId(), newList);
+            }
+            else{
+                List<LocalDateTime> newList = mapTimesPerTask.get(t1.getTask().getId());
+                newList.add(t1.getDate_of_error());
+                mapTimesPerTask.put(t1.getTask().getId(), newList);
+            }
+        }
+
+        long totalTimeRepairErrors = 0;
+        long totalCountRepairErrors = 0;
+
+        for (Long failedTaskId : mapTimesPerTask.keySet()){
+            List<LocalDateTime> sortedList = mapTimesPerTask.get(failedTaskId);
+            Collections.sort(sortedList);
+
+            for (int i=1;i < sortedList.size();i++){
+                LocalDateTime prevTime = sortedList.get(i-1);
+                LocalDateTime curTime = sortedList.get(i);
+
+                long minutes = ChronoUnit.MINUTES.between(prevTime, curTime);
+                totalTimeRepairErrors += minutes;
+                totalCountRepairErrors += 1;
+
+            }
+
+
+        }
+
+        float averageTimeRepairError= (float) totalTimeRepairErrors / totalCountRepairErrors;
+
+        newUserAnalyzeTimesRepairError.setValue(String.valueOf(averageTimeRepairError));
+
+        userAnalyzeRepository.save(newUserAnalyzeTimesRepairError);
+
+        result += " Average Time for Repair Errors - " + averageTimeRepairError;
 
 
 
