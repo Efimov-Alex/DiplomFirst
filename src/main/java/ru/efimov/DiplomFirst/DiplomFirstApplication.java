@@ -15,6 +15,8 @@ public class DiplomFirstApplication {
 /*
 http://localhost:8083/login
 
+http://localhost:8083/api/taskError/100
+
 {"username":"Alex", "password":"efefef"}
 
 
@@ -80,6 +82,15 @@ http://localhost:8083/api/materials/67/materialAnalyzes/
 http://localhost:8083/api/tasks/56/taskAnalyzes
 
 {"mean_time":45.7, "creation_time":"2025-03-11T13:00:00", "deadline":"2025-03-12T13:45:00","count_error":3.6}
+
+
+
+http://localhost:8083/api/auth/login
+
+http://localhost:8083/api/students
+
+
+
  */
 
 // { "date_of_error":"2024-02-10T13:45:00", "count_errors":12}

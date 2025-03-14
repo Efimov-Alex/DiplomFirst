@@ -1,34 +1,41 @@
 package ru.efimov.DiplomFirst.controller;
 
 
-import lombok.RequiredArgsConstructor;
 
+
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import ru.efimov.DiplomFirst.component.Login;
-import ru.efimov.DiplomFirst.dto.JwtRequest;
-import ru.efimov.DiplomFirst.exception.UserAuthException;
+import org.springframework.web.bind.annotation.*;
+import ru.efimov.DiplomFirst.domain.JwtRequest;
+import ru.efimov.DiplomFirst.domain.JwtResponse;
+import ru.efimov.DiplomFirst.domain.RefreshJwtRequest;
 import ru.efimov.DiplomFirst.service.AuthService;
 
 import javax.security.auth.message.AuthException;
 
 @RestController
-@RequestMapping("/login")
+@RequestMapping("api/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final AuthService authService;
 
-    @PostMapping()
-    public ResponseEntity<Login> login(@RequestBody JwtRequest authRequest) {
-        final Login token;
-        try {
-            token = authService.login(authRequest);
-        } catch (AuthException e) {
-            throw new UserAuthException(e);
-        }
+    @PostMapping("login")
+    public ResponseEntity<JwtResponse> login(@RequestBody JwtRequest authRequest) throws AuthException {
+        final JwtResponse token = authService.login(authRequest);
         return ResponseEntity.ok(token);
     }
+
+    @PostMapping("token")
+    public ResponseEntity<JwtResponse> getNewAccessToken(@RequestBody RefreshJwtRequest request) throws AuthException {
+        final JwtResponse token = authService.getAccessToken(request.getRefreshToken());
+        return ResponseEntity.ok(token);
+    }
+
+    @PostMapping("refresh")
+    public ResponseEntity<JwtResponse> getNewRefreshToken(@RequestBody RefreshJwtRequest request) throws AuthException {
+        final JwtResponse token = authService.refresh(request.getRefreshToken());
+        return ResponseEntity.ok(token);
+    }
+
 }

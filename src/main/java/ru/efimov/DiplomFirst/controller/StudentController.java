@@ -6,15 +6,12 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.efimov.DiplomFirst.entity.Enter;
-import ru.efimov.DiplomFirst.entity.Material;
 import ru.efimov.DiplomFirst.entity.Student;
-import ru.efimov.DiplomFirst.repository.MaterialRepository;
 import ru.efimov.DiplomFirst.repository.StudentRepository;
+import ru.efimov.DiplomFirst.service.UserService;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @CrossOrigin(origins = "http://localhost:8083")
 @RestController
@@ -23,6 +20,12 @@ public class StudentController {
 
     @Autowired
     StudentRepository studentRepository;
+
+    private UserService service;
+
+    public StudentController(UserService service) {
+        this.service = service;
+    }
 
     @GetMapping("/students")
     public ResponseEntity<List<Student>> getAllStudents() {
