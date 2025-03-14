@@ -13,11 +13,20 @@ public class DiplomFirstApplication {
 }
 
 /*
-http://localhost:8083/login
+http://localhost:8083/api/auth/login
+
+http://localhost:8083/api/students/29/metrics
+
+{"characteristic":"Время на исправление ошибок", "value":"efefef"}
+{
+    "type": "Bearer",
+    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzQ0NTM3OTUwLCJyb2xlcyI6WyJVU0VSIl0sImZpcnN0TmFtZSI6ItCQ0L3RgtC-0L0ifQ.-teV2Qza5gascvyMv5BfqKI_IRoEoDgMpnkErbesPsqQ4EJl7OMhusjCUBRxME0Htd0GQY3JdhPBaBpp3fJR7A",
+    "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzY3ODY1OTUwfQ.cAjHxbyCRrKI161hUodrUQgz4XM8n8ELmh_-amtE0S0BWPsTW3h58dgljamPz7Z2dL85P-teEshwez6W0svLIQ"
+}
 
 http://localhost:8083/api/taskError/100
 
-{"username":"Alex", "password":"efefef"}
+{"login":"Alex", "password":"efefef"}
 
 
 http://localhost:8083/api/materials
