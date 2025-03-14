@@ -15,8 +15,7 @@ public class User {
 
     private String login;
     private String password;
-    private String firstName;
-    private String lastName;
+    private Long id;
     private Set<Role> roles;
 
 }

@@ -13,16 +13,18 @@ public class DiplomFirstApplication {
 }
 
 /*
+{
+    "type": "Bearer",
+    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzQ0NTYwMDM2LCJyb2xlcyI6WyJVU0VSIl19.BSTqHHEfLyoWpeFZcF7VoZH_jisFZmb5QppT_0wCjOeyXLqCOHEU4HoJ1k8xkaLZhbIFCka8-sOtbUnjgZyBGQ",
+    "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzY3ODg4MDM2fQ.JCj3rCdyWtHtX4b7spKboZJeAXca5HyMcFdH1hfBuLpxFgcP6NTMtlYq6WPp-DO52RBX-D4ngtvDIcW4keq93A"
+}
+
 http://localhost:8083/api/auth/login
 
 http://localhost:8083/api/students/29/metrics
 
 {"characteristic":"Время на исправление ошибок", "value":"efefef"}
-{
-    "type": "Bearer",
-    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzQ0NTM3OTUwLCJyb2xlcyI6WyJVU0VSIl0sImZpcnN0TmFtZSI6ItCQ0L3RgtC-0L0ifQ.-teV2Qza5gascvyMv5BfqKI_IRoEoDgMpnkErbesPsqQ4EJl7OMhusjCUBRxME0Htd0GQY3JdhPBaBpp3fJR7A",
-    "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzY3ODY1OTUwfQ.cAjHxbyCRrKI161hUodrUQgz4XM8n8ELmh_-amtE0S0BWPsTW3h58dgljamPz7Z2dL85P-teEshwez6W0svLIQ"
-}
+
 
 http://localhost:8083/api/taskError/100
 

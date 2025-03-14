@@ -5,11 +5,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import ru.efimov.DiplomFirst.domain.JwtAuthentication;
 import ru.efimov.DiplomFirst.entity.Student;
 import ru.efimov.DiplomFirst.repository.StudentRepository;
+import ru.efimov.DiplomFirst.service.JwtProvider;
 import ru.efimov.DiplomFirst.service.UserService;
+import io.jsonwebtoken.Claims;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,9 +47,19 @@ public class StudentController {
     }
 
     @GetMapping("/students/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable("id") long id) {
+    public ResponseEntity<Student> getStudentById(@PathVariable("id") long id, Principal principal) {
+        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+
+
+
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + id));
+
+        System.out.println(student.getUsername());
+
+        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            System.out.println("Все ок!");
+        }
 
         return new ResponseEntity<>(student, HttpStatus.OK);
     }

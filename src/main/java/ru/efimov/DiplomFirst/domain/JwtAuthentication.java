@@ -17,6 +17,7 @@ public class JwtAuthentication implements Authentication {
     private boolean authenticated;
     private String username;
     private String firstName;
+
     private Set<Role> roles;
 
     @Override
@@ -39,7 +40,9 @@ public class JwtAuthentication implements Authentication {
         this.authenticated = isAuthenticated;
     }
 
-    @Override
-    public String getName() { return firstName; }
 
+    @Override
+    public String getName() {
+        return firstName;
+    }
 }
