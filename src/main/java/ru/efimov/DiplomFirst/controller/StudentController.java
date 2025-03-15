@@ -48,17 +48,14 @@ public class StudentController {
 
     @GetMapping("/students/{id}")
     public ResponseEntity<Student> getStudentById(@PathVariable("id") long id, Principal principal) {
-        System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
 
 
         Student student = studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + id));
 
-        System.out.println(student.getUsername());
 
-        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
-            System.out.println("Все ок!");
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         return new ResponseEntity<>(student, HttpStatus.OK);
@@ -75,6 +72,10 @@ public class StudentController {
         Student _student = studentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + id));
 
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(_student.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         _student.setUsername(student.getUsername());
         _student.setPassword(student.getPassword());
         _student.setDate_of_registration(student.getDate_of_registration());
@@ -84,6 +85,13 @@ public class StudentController {
 
     @DeleteMapping("/students/{id}")
     public ResponseEntity<HttpStatus> deleteStudent(@PathVariable("id") long id) {
+        Student student = studentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + id));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         studentRepository.deleteById(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

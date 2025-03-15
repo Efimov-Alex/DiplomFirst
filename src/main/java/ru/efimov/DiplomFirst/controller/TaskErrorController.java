@@ -4,16 +4,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import ru.efimov.DiplomFirst.entity.Student;
-import ru.efimov.DiplomFirst.entity.Task;
-import ru.efimov.DiplomFirst.entity.TaskError;
-import ru.efimov.DiplomFirst.entity.TaskPassed;
+import ru.efimov.DiplomFirst.entity.*;
 import ru.efimov.DiplomFirst.repository.StudentRepository;
 import ru.efimov.DiplomFirst.repository.TaskErrorRepository;
 import ru.efimov.DiplomFirst.repository.TaskPassedRepository;
 import ru.efimov.DiplomFirst.repository.TaskRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,7 +37,18 @@ public class TaskErrorController {
         }
 
         List<TaskError> taskErrors = taskErrorRepository.findByTaskId(taskId);
-        return new ResponseEntity<>(taskErrors, HttpStatus.OK);
+
+        List<TaskError> taskErrorsCurStudent = new ArrayList<>();
+        for (TaskError t1 : taskErrors){
+            Student student1 = studentRepository.findById(t1.getStudent().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + t1.getStudent().getId()));
+
+            if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+                taskErrorsCurStudent.add(t1);
+            }
+        }
+
+        return new ResponseEntity<>(taskErrorsCurStudent, HttpStatus.OK);
     }
 
     @GetMapping("/students/{studentId}/taskError")
@@ -46,6 +56,13 @@ public class TaskErrorController {
         if (!studentRepository.existsById(studentId)) {
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
+        Student student1 = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
 
         List<TaskError> taskErrors = taskErrorRepository.findByStudentId(studentId);
         return new ResponseEntity<>(taskErrors, HttpStatus.OK);
@@ -56,6 +73,13 @@ public class TaskErrorController {
         TaskError taskError = taskErrorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found TaskError with id = " + id));
 
+        Student student1 = studentRepository.findById(taskError.getStudent().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + taskError.getStudent().getId()));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         return new ResponseEntity<>(taskError, HttpStatus.OK);
     }
 
@@ -63,6 +87,13 @@ public class TaskErrorController {
     public ResponseEntity<TaskError> createTaskError(@PathVariable(value = "studentId") Long studentId,
                                                        @PathVariable(value = "taskId") Long taskId,
                                                        @RequestBody TaskError taskErrorRequest) {
+        Student student1 = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         Optional<Student> optionalStudent = studentRepository.findById(studentId);
         Optional<Task> optionalTask = taskRepository.findById(taskId);
         Student student = null;
@@ -93,6 +124,14 @@ public class TaskErrorController {
         TaskError taskError = taskErrorRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("TaskErrorId " + id + "not found"));
 
+        Student student1 = studentRepository.findById(taskError.getStudent().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + taskError.getStudent().getId()));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+
         taskError.setDate_of_error(taskErrorRequest.getDate_of_error());
         taskError.setCount_errors(taskErrorRequest.getCount_errors());
 
@@ -101,6 +140,16 @@ public class TaskErrorController {
 
     @DeleteMapping("/taskError/{id}")
     public ResponseEntity<HttpStatus> deleteTaskError(@PathVariable("id") long id) {
+        TaskError taskError = taskErrorRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("TaskErrorId " + id + "not found"));
+
+        Student student1 = studentRepository.findById(taskError.getStudent().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + taskError.getStudent().getId()));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         taskErrorRepository.deleteById(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -111,6 +160,13 @@ public class TaskErrorController {
         if (!studentRepository.existsById(studentId)) {
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
+        Student student1 = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
 
         taskErrorRepository.deleteByStudentId(studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -121,6 +177,16 @@ public class TaskErrorController {
         if (!taskRepository.existsById(taskId)) {
             throw new ResourceNotFoundException("Not found Task with id = " + taskId);
         }
+        TaskError taskError = taskErrorRepository.findById(taskId)
+                .orElseThrow(() -> new ResourceNotFoundException("TaskErrorId " + taskId + "not found"));
+
+        Student student1 = studentRepository.findById(taskError.getStudent().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + taskError.getStudent().getId()));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
 
         taskErrorRepository.deleteByTaskId(taskId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.efimov.DiplomFirst.entity.CloseMaterial;
 import ru.efimov.DiplomFirst.entity.Material;
@@ -40,7 +41,17 @@ public class CloseMaterialController {
         }
 
         List<CloseMaterial> closeMaterials = closeMaterialRepository.findByMaterialId(materialId);
-        return new ResponseEntity<>(closeMaterials, HttpStatus.OK);
+
+        List<CloseMaterial> closeMaterialsCurStudent = new ArrayList<>();
+        for (CloseMaterial c1 : closeMaterials){
+            Student student1 = studentRepository.findById(c1.getStudent().getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + c1.getStudent().getId()));
+
+            if (SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+                closeMaterialsCurStudent.add(c1);
+            }
+        }
+        return new ResponseEntity<>(closeMaterialsCurStudent, HttpStatus.OK);
     }
 
     @GetMapping("/students/{studentId}/closeMaterials")
@@ -48,6 +59,13 @@ public class CloseMaterialController {
         if (!studentRepository.existsById(studentId)) {
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
+        Student student1 = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
 
         List<CloseMaterial> closeMaterials = closeMaterialRepository.findByStudentId(studentId);
         return new ResponseEntity<>(closeMaterials, HttpStatus.OK);
@@ -58,6 +76,13 @@ public class CloseMaterialController {
         CloseMaterial closeMaterial = closeMaterialRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found CloseMaterial with id = " + id));
 
+        Student student1 = studentRepository.findById(closeMaterial.getStudent().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + closeMaterial.getStudent().getId()));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         return new ResponseEntity<>(closeMaterial, HttpStatus.OK);
     }
 
@@ -65,6 +90,14 @@ public class CloseMaterialController {
     public ResponseEntity<CloseMaterial> createCloseMaterial(@PathVariable(value = "studentId") Long studentId,
                                                            @PathVariable(value = "materialId") Long materialId,
                                                            @RequestBody CloseMaterial closeMaterialRequest) {
+        Student student1 = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+
         Optional<Student> optionalStudent = studentRepository.findById(studentId);
         Optional<Material> optionalMaterial = materialRepository.findById(materialId);
         Student student = null;
@@ -95,6 +128,13 @@ public class CloseMaterialController {
         CloseMaterial closeMaterial = closeMaterialRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("CloseMaterialId " + id + "not found"));
 
+        Student student1 = studentRepository.findById(closeMaterial.getStudent().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + closeMaterial.getStudent().getId()));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         closeMaterial.setDate_of_close(closeMaterialRequest.getDate_of_close());
 
         return new ResponseEntity<>(closeMaterialRepository.save(closeMaterial), HttpStatus.OK);
@@ -102,6 +142,16 @@ public class CloseMaterialController {
 
     @DeleteMapping("/closeMaterials/{id}")
     public ResponseEntity<HttpStatus> deleteCloseMaterial(@PathVariable("id") long id) {
+        CloseMaterial closeMaterial = closeMaterialRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("CloseMaterialId " + id + "not found"));
+
+        Student student1 = studentRepository.findById(closeMaterial.getStudent().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + closeMaterial.getStudent().getId()));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         closeMaterialRepository.deleteById(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
@@ -112,6 +162,13 @@ public class CloseMaterialController {
         if (!studentRepository.existsById(studentId)) {
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
+        Student student1 = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
 
         closeMaterialRepository.deleteByStudentId(studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

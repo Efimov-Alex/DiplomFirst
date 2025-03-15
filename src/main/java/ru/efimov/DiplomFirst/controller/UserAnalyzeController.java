@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.efimov.DiplomFirst.entity.*;
 import ru.efimov.DiplomFirst.repository.*;
@@ -44,6 +45,13 @@ public class UserAnalyzeController {
     @GetMapping("/students/{studentId}/metrics")
     public ResponseEntity<String> getUserMetrics(@PathVariable(value = "studentId") Long studentId
     ) {
+        Student student1 = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
         List<UserAnalyze> userAnalyzes = userAnalyzeRepository.findByStudentId(studentId);
 
         if (userAnalyzes.size() ==0){
@@ -374,6 +382,14 @@ public class UserAnalyzeController {
     @PostMapping("/students/{studentId}/userAnalyzes")
     public ResponseEntity<UserAnalyze> createUserAnalyze(@PathVariable(value = "studentId") Long studentId,
                                                                @RequestBody UserAnalyze userAnalyzeRequest) {
+        Student student1 = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+
         UserAnalyze userAnalyze = studentRepository.findById(studentId).map(student -> {
             userAnalyzeRequest.setStudent(student);
             return userAnalyzeRepository.save(userAnalyzeRequest);
@@ -405,6 +421,13 @@ public class UserAnalyzeController {
         if (!studentRepository.existsById(studentId)) {
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
+        Student student1 = studentRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
+
+        if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
 
         userAnalyzeRepository.deleteByStudentId(studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
