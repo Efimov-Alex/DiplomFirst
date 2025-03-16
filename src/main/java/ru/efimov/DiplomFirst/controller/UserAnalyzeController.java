@@ -83,6 +83,10 @@ public class UserAnalyzeController {
             totalSum += t1.getCount_errors();
         }
 
+        if (lengthList == 0){
+            throw new ResourceNotFoundException("Not found TaskError");
+        }
+
         float averageCount = (float) totalSum / lengthList;
 
         newUserAnalyzeErrors.setValue(String.valueOf(averageCount));
@@ -127,6 +131,10 @@ public class UserAnalyzeController {
 
         for (Long failedTaskId : mapAttemptsPerTask.keySet()){
             totalFailAttempts += mapAttemptsPerTask.get(failedTaskId);
+        }
+
+        if (mapAttemptsPerTask.size() == 0){
+            throw new ResourceNotFoundException("Not found TaskError");
         }
 
         float averageFailedAttempt = (float) totalFailAttempts / mapAttemptsPerTask.size();
@@ -192,6 +200,10 @@ public class UserAnalyzeController {
 
         }
 
+        if (totalCountRepairErrors == 0){
+            throw new ResourceNotFoundException("Not found TaskError");
+        }
+
         float averageTimeRepairError= (float) totalTimeRepairErrors / totalCountRepairErrors;
 
         newUserAnalyzeTimesRepairError.setValue(String.valueOf(averageTimeRepairError));
@@ -254,6 +266,9 @@ public class UserAnalyzeController {
             }
         }
 
+        if (totalCountBetweenFirstTryAndPassed == 0){
+            throw new ResourceNotFoundException("Not found TaskPassed");
+        }
 
         float averageTimeBetweenFirstTryAndPassed= (float) totalTimeBetweenFirstTryAndPassed / totalCountBetweenFirstTryAndPassed;
 
@@ -333,6 +348,9 @@ public class UserAnalyzeController {
             }
             else{
                 List<OpenMaterial> list1 = map.get(o1.getStudent().getId());
+                if (list1.size() == 0){
+                    throw new ResourceNotFoundException("Not found OpenMaterial");
+                }
                 OpenMaterial o2 = list1.remove(list1.size()-1);
                 map.put(o1.getStudent().getId(), list1);
 
@@ -346,6 +364,10 @@ public class UserAnalyzeController {
                 totalTimeSum += minutes;
                 timeCount += 1;
             }
+        }
+
+        if (timeCount == 0){
+            throw new ResourceNotFoundException("Not found CloseMaterial");
         }
 
 

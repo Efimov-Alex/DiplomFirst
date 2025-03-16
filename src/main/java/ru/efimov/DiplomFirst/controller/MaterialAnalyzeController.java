@@ -85,6 +85,9 @@ public class MaterialAnalyzeController {
             }
             else{
                 List<OpenMaterial> list1 = map.get(o1.getStudent().getId());
+                if (list1.size() == 0){
+                    throw new ResourceNotFoundException("Not found OpenMaterial");
+                }
                 OpenMaterial o2 = list1.remove(list1.size()-1);
                 map.put(o1.getStudent().getId(), list1);
 
@@ -103,6 +106,10 @@ public class MaterialAnalyzeController {
         newMaterialAnalyze.setId(oldMaterialAnalyze.getId());
         newMaterialAnalyze.setMaterial(oldMaterialAnalyze.getMaterial());
         newMaterialAnalyze.setMean_time(oldMaterialAnalyze.getMean_time());
+
+        if (timeCount == 0){
+            throw new ResourceNotFoundException("Not found OpenMaterial");
+        }
 
         float averageTime = (float) totalTimeSum / timeCount;
         newMaterialAnalyze.setMean_time(averageTime);

@@ -70,6 +70,9 @@ public class TaskAnalyzeController {
         for (TaskError t1 : taskErrors){
             totalSum += t1.getCount_errors();
         }
+        if (lengthList == 0){
+            throw new ResourceNotFoundException("Not found TaskError");
+        }
 
         float averageCount = (float) totalSum / lengthList;
 
@@ -96,6 +99,9 @@ public class TaskAnalyzeController {
             totalTimeSum += minutes;
             timeCount += 1;
 
+        }
+        if (timeCount == 0){
+            throw new ResourceNotFoundException("Not found TaskPassed");
         }
 
         float averageTime = (float) totalTimeSum / timeCount;
