@@ -1,7 +1,6 @@
 package ru.efimov.DiplomFirst.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.efimov.DiplomFirst.entity.ProfileAnalyze;
 import ru.efimov.DiplomFirst.entity.UserAnalyze;
 
 import javax.transaction.Transactional;

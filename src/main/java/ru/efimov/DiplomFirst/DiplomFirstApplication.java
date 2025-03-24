@@ -101,6 +101,8 @@ http://localhost:8083/api/auth/login
 http://localhost:8083/api/students
 
 
+{"mean_time":0.0,"creation_time":"2025-02-09T13:00:00","deadline":"2025-04-30T13:00:00","count_error":0.0}
+
 
  */
 
