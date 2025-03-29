@@ -80,7 +80,7 @@ public class TaskAnalyzeController {
 
         List<TaskPassed> taskPasseds = taskPassedRepository.findByTaskId(taskId);
 
-        long totalTimeSum = 0;
+        double totalTimeSum = 0;
         long timeCount = 0;
 
         for(TaskPassed t1 : taskPasseds){
@@ -93,16 +93,23 @@ public class TaskAnalyzeController {
             }
 
             long minutes = ChronoUnit.MINUTES.between(newTaskAnalyze.getCreation_time(), l1);
+
+            long minutesUnderDeadline = ChronoUnit.MINUTES.between(newTaskAnalyze.getCreation_time(), newTaskAnalyze.getDeadline());
             System.out.println(minutes);
-            System.out.println(newTaskAnalyze.getCreation_time());
+            System.out.println(minutesUnderDeadline);
             System.out.println(l1);
-            totalTimeSum += minutes;
+            totalTimeSum += (double) minutes / minutesUnderDeadline;
             timeCount += 1;
+
+            System.out.println(totalTimeSum);
 
         }
         if (timeCount == 0){
             throw new ResourceNotFoundException("Not found TaskPassed");
         }
+
+        System.out.println(totalTimeSum);
+        System.out.println(timeCount);
 
         float averageTime = (float) totalTimeSum / timeCount;
         newTaskAnalyze.setMean_time(averageTime);

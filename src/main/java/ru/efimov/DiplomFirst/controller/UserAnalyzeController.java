@@ -149,6 +149,8 @@ public class UserAnalyzeController {
 
         HashMap<Long, List<LocalDateTime>> mapTimesPerTask = new HashMap<>();
 
+        HashMap<Long, List<Integer>> mapErrorsPerTask = new HashMap<>();
+
         UserAnalyze newUserAnalyzeTimesRepairError = null;
 
         for (UserAnalyze u1 : userAnalyzes){
@@ -172,11 +174,26 @@ public class UserAnalyzeController {
                 newList.add(t1.getDate_of_error());
 
                 mapTimesPerTask.put(t1.getTask().getId(), newList);
+
+                /*
+                List<Integer> newList1 = new ArrayList<>();
+                newList1.add(t1.getCount_errors());
+                mapErrorsPerTask.put(t1.getTask().getId(), newList1);
+
+                 */
             }
             else{
                 List<LocalDateTime> newList = mapTimesPerTask.get(t1.getTask().getId());
                 newList.add(t1.getDate_of_error());
                 mapTimesPerTask.put(t1.getTask().getId(), newList);
+
+                /*
+
+                List<Integer> newList1 = mapErrorsPerTask.get(t1.getTask().getId());
+                newList1.add(t1.getCount_errors());
+                mapErrorsPerTask.put(t1.getTask().getId(), newList1);
+
+                 */
             }
         }
 

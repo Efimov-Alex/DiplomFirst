@@ -47,7 +47,7 @@ public class StudentController {
     }
 
     @GetMapping("/students/{id}")
-    public ResponseEntity<Student> getStudentById(@PathVariable("id") long id, Principal principal) {
+    public ResponseEntity<Student> getStudentById(@PathVariable("id") long id) {
 
 
         Student student = studentRepository.findById(id)
