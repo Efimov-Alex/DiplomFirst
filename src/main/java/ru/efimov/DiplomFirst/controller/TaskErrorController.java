@@ -7,10 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import ru.efimov.DiplomFirst.entity.*;
-import ru.efimov.DiplomFirst.repository.StudentRepository;
-import ru.efimov.DiplomFirst.repository.TaskErrorRepository;
-import ru.efimov.DiplomFirst.repository.TaskPassedRepository;
-import ru.efimov.DiplomFirst.repository.TaskRepository;
+import ru.efimov.DiplomFirst.repository.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +26,9 @@ public class TaskErrorController {
 
     @Autowired
     private TaskErrorRepository taskErrorRepository;
+
+    @Autowired
+    private UserAnalyzeRepository userAnalyzeRepository;
 
     @GetMapping("/tasks/{taskId}/taskError")
     public ResponseEntity<List<TaskError>> getAllTasksErrorByTaskId(@PathVariable(value = "taskId") Long taskId) {
@@ -114,9 +114,37 @@ public class TaskErrorController {
 
         TaskError taskError = new TaskError(student, task, taskErrorRequest.getDate_of_error(), taskErrorRequest.getCount_errors());
 
-        TaskError _taskError = taskErrorRepository.save(taskError);
 
-        return new ResponseEntity<>(_taskError, HttpStatus.CREATED);
+        List<UserAnalyze> listUserAnalyze = userAnalyzeRepository.findByStudentId(studentId);
+        UserAnalyze userAnalyzeCountErrors = null;
+        for (UserAnalyze userAnalyze : listUserAnalyze){
+            if (userAnalyze.getCharacteristic().contains("Колличество ошибок")){
+                userAnalyzeCountErrors = userAnalyze;
+            }
+        }
+
+
+
+        if ( 4 * taskError.getCount_errors() >= 3 * Double.parseDouble(userAnalyzeCountErrors.getValue()) && taskError.getCount_errors() <= 5 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
+            System.out.println("Значение в пределах нормы");
+            TaskError _taskError = taskErrorRepository.save(taskError);
+            return new ResponseEntity<>(_taskError, HttpStatus.CREATED);
+        }
+
+        else if (2 * taskError.getCount_errors() <  Double.parseDouble(userAnalyzeCountErrors.getValue()) || taskError.getCount_errors() > 3 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
+            System.out.println("Значение сильно отличаются, это другой человек.");
+            return new ResponseEntity<>(taskError, HttpStatus.CREATED);
+            //TaskError _taskError = taskErrorRepository.save(taskError);
+        }
+
+
+        else {
+            System.out.println("Значение в отличаюся от нормальных, но не сильно.");
+            TaskError _taskError = taskErrorRepository.save(taskError);
+            return new ResponseEntity<>(_taskError, HttpStatus.CREATED);
+        }
+
+        //return new ResponseEntity<>(_taskError, HttpStatus.CREATED);
     }
 
     @PutMapping("/taskError/{id}")
