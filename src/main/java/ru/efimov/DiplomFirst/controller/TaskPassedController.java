@@ -28,6 +28,12 @@ public class TaskPassedController {
     @Autowired
     private TaskPassedRepository taskPassedRepository;
 
+    @Autowired
+    private TaskErrorRepository taskErrorRepository;
+
+    @Autowired
+    private UserAnalyzeRepository userAnalyzeRepository;
+
     @GetMapping("/tasks/{taskId}/taskPassed")
     public ResponseEntity<List<TaskPassed>> getAllTasksPassedByTaskId(@PathVariable(value = "taskId") Long taskId) {
         if (!taskRepository.existsById(taskId)) {
@@ -115,9 +121,45 @@ public class TaskPassedController {
 
         TaskPassed taskPassed = new TaskPassed(student, task, taskPassedRequest.getDate_of_passed());
 
-        TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
 
-        return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
+        List<TaskError> listTaskErrors = taskErrorRepository.findByStudentId(studentId);
+
+        List<TaskError> listTaskErrorsByStudentAndTasks = new ArrayList<>();
+
+        for (TaskError taskError: listTaskErrors){
+            if (taskError.getTask().getId() == taskId){
+                listTaskErrorsByStudentAndTasks.add(taskError);
+            }
+        }
+
+        List<UserAnalyze> listUserAnalyze = userAnalyzeRepository.findByStudentId(studentId);
+        UserAnalyze userAnalyzeCountErrors = null;
+        for (UserAnalyze userAnalyze : listUserAnalyze){
+            if (userAnalyze.getCharacteristic().contains("Колличество попыток")){
+                userAnalyzeCountErrors = userAnalyze;
+            }
+        }
+
+
+        if ( 4 * listTaskErrorsByStudentAndTasks.size() >= 3 * Double.parseDouble(userAnalyzeCountErrors.getValue()) && listTaskErrorsByStudentAndTasks.size() <= 5 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
+            System.out.println("Значение в пределах нормы");
+            TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
+            return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
+        }
+        else if (2 * listTaskErrorsByStudentAndTasks.size() <  Double.parseDouble(userAnalyzeCountErrors.getValue()) || listTaskErrorsByStudentAndTasks.size() > 3 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
+            System.out.println("Значение сильно отличаются, это другой человек.");
+            return new ResponseEntity<>(taskPassed, HttpStatus.CREATED);
+            //TaskError _taskError = taskErrorRepository.save(taskError);
+        }
+        else {
+            System.out.println("Значение в отличаюся от нормальных, но не сильно.");
+            TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
+            return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
+        }
+
+       // TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
+
+       // return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
     }
 
     @PutMapping("/tasksPassed/{id}")

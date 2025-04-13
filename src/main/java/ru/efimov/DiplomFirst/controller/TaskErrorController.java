@@ -123,23 +123,31 @@ public class TaskErrorController {
             }
         }
 
+        List<TaskError> listTaskErrorByUser = taskErrorRepository.findByStudentId(studentId);
 
 
-        if ( 4 * taskError.getCount_errors() >= 3 * Double.parseDouble(userAnalyzeCountErrors.getValue()) && taskError.getCount_errors() <= 5 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
-            System.out.println("Значение в пределах нормы");
-            TaskError _taskError = taskErrorRepository.save(taskError);
-            return new ResponseEntity<>(_taskError, HttpStatus.CREATED);
-        }
 
-        else if (2 * taskError.getCount_errors() <  Double.parseDouble(userAnalyzeCountErrors.getValue()) || taskError.getCount_errors() > 3 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
-            System.out.println("Значение сильно отличаются, это другой человек.");
-            return new ResponseEntity<>(taskError, HttpStatus.CREATED);
-            //TaskError _taskError = taskErrorRepository.save(taskError);
+        if (listTaskErrorByUser.size() >= 10){
+            if ( 4 * taskError.getCount_errors() >= 3 * Double.parseDouble(userAnalyzeCountErrors.getValue()) && taskError.getCount_errors() <= 5 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
+                System.out.println("Значение в пределах нормы");
+                TaskError _taskError = taskErrorRepository.save(taskError);
+                return new ResponseEntity<>(_taskError, HttpStatus.CREATED);
+            }
+            else if (2 * taskError.getCount_errors() <  Double.parseDouble(userAnalyzeCountErrors.getValue()) || taskError.getCount_errors() > 3 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
+                System.out.println("Значение сильно отличаются, это другой человек.");
+                return new ResponseEntity<>(taskError, HttpStatus.CREATED);
+                //TaskError _taskError = taskErrorRepository.save(taskError);
+            }
+            else {
+                System.out.println("Значение в отличаюся от нормальных, но не сильно.");
+                TaskError _taskError = taskErrorRepository.save(taskError);
+                return new ResponseEntity<>(_taskError, HttpStatus.CREATED);
+            }
         }
 
 
         else {
-            System.out.println("Значение в отличаюся от нормальных, но не сильно.");
+            System.out.println("Мало данных, чтобы понять другой ли это пользователь.");
             TaskError _taskError = taskErrorRepository.save(taskError);
             return new ResponseEntity<>(_taskError, HttpStatus.CREATED);
         }
