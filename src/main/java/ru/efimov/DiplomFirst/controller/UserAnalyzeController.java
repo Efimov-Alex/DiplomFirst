@@ -38,6 +38,13 @@ public class UserAnalyzeController {
     private CloseMaterialRepository closeMaterialRepository;
 
 
+    @Autowired
+    private  EnterRepository enterRepository;
+
+    @Autowired
+    private  ExitRepository exitRepository;
+
+
 
 
 
@@ -396,6 +403,102 @@ public class UserAnalyzeController {
         userAnalyzeRepository.save(newUserAnalyzeTimeOnMaterials);
 
         result += " Average Time on materials - " + averageTimeOnMaterials;
+
+
+
+
+
+
+
+
+        UserAnalyze newUserAnalyzeTimeOnEnter = null;
+
+        for (UserAnalyze u1 : userAnalyzes){
+            if (u1.getCharacteristic().equals("Время на чтение сессии")){
+                newUserAnalyzeTimeOnEnter = new UserAnalyze();
+                newUserAnalyzeTimeOnEnter.setId(u1.getId());
+                newUserAnalyzeTimeOnEnter.setStudent(u1.getStudent());
+                newUserAnalyzeTimeOnEnter.setCharacteristic(u1.getCharacteristic());
+                newUserAnalyzeTimeOnEnter.setValue(u1.getValue());
+            }
+        }
+
+        if (newUserAnalyzeTimeOnEnter == null){
+            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время на чтение материалов");
+        }
+
+        List<Enter> enters = enterRepository.findByStudentId(studentId);
+        List<Exit> exits = exitRepository.findByStudentId(studentId);
+
+        Collections.sort(enters, new Comparator<Enter>() {
+            @Override
+            public int compare(Enter a1, Enter a2) {
+                return a1.getDate_of_enter().compareTo(a2.getDate_of_enter());
+            }
+        });
+
+        Collections.sort(exits, new Comparator<Exit>() {
+            @Override
+            public int compare(Exit a1, Exit a2) {
+                return a1.getDate_of_exit().compareTo(a2.getDate_of_exit());
+            }
+        });
+
+        HashMap<Long, List<Enter>> mapEnetrs = new HashMap<>();
+
+        for (Enter o1 : enters){
+            if (!mapEnetrs.containsKey(o1.getStudent().getId())){
+                List<Enter> list1 = new ArrayList<>();
+                list1.add(o1);
+                mapEnetrs.put(o1.getStudent().getId(), list1);
+            }
+            else{
+                List<Enter> list1 = mapEnetrs.get(o1.getStudent().getId());
+                list1.add(0, o1);
+                mapEnetrs.put(o1.getStudent().getId(), list1);
+            }
+        }
+
+        totalTimeSum = 0;
+        timeCount = 0;
+
+        for (Exit o1 : exits){
+            if (!mapEnetrs.containsKey(o1.getStudent().getId())){
+                continue;
+            }
+            else{
+                List<Enter> list1 = mapEnetrs.get(o1.getStudent().getId());
+                if (list1.size() == 0){
+                    throw new ResourceNotFoundException("Not found Enter");
+                }
+                Enter o2 = list1.remove(list1.size()-1);
+                mapEnetrs.put(o1.getStudent().getId(), list1);
+
+                if (o2.getDate_of_enter().compareTo(o1.getDate_of_exit()) > 0){
+                    continue;
+                }
+                long minutes = ChronoUnit.MINUTES.between(o2.getDate_of_enter(), o1.getDate_of_exit());
+                System.out.println(minutes);
+                System.out.println(o2.getDate_of_enter());
+                System.out.println(o1.getDate_of_exit());
+                totalTimeSum += minutes;
+                timeCount += 1;
+            }
+        }
+
+        if (timeCount == 0){
+            throw new ResourceNotFoundException("Not found Exit");
+        }
+
+
+        float averageTimeOnEnters = (float) totalTimeSum / timeCount;
+
+        newUserAnalyzeTimeOnEnter.setValue(String.valueOf(averageTimeOnEnters));
+
+
+        userAnalyzeRepository.save(newUserAnalyzeTimeOnEnter);
+
+        result += " Average Time on session - " + averageTimeOnEnters;
 
 
 

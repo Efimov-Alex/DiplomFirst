@@ -15,8 +15,8 @@ public class DiplomFirstApplication {
 /*
 {
     "type": "Bearer",
-    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzQ0NTYwMDM2LCJyb2xlcyI6WyJVU0VSIl19.BSTqHHEfLyoWpeFZcF7VoZH_jisFZmb5QppT_0wCjOeyXLqCOHEU4HoJ1k8xkaLZhbIFCka8-sOtbUnjgZyBGQ",
-    "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzY3ODg4MDM2fQ.JCj3rCdyWtHtX4b7spKboZJeAXca5HyMcFdH1hfBuLpxFgcP6NTMtlYq6WPp-DO52RBX-D4ngtvDIcW4keq93A"
+    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzQ3MjMwNTUwLCJyb2xlcyI6WyJVU0VSIl19.eez-JuAvN7VP2zjawTqWNJTgBt1Z5eGLP4fc7_cMYPg-NzoPOmlYxP7XcrosCuf2M2DDZKgEZphn8XXS1UiTWw",
+    "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzcwNTU4NTUwfQ.sDmqTsFDyoawSLQTpcQWgtS7rTEhG7QKjVS2r32kqwQrmUYH0laBUxgEkzE5wcpHXOshlQgl1OkAxvWoGaMsuA"
 }
 
 http://localhost:8083/api/auth/login
