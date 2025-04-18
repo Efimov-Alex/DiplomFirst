@@ -13,6 +13,8 @@ import ru.efimov.DiplomFirst.repository.TaskRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @CrossOrigin(origins = "http://localhost:8083")
 @RestController
@@ -20,6 +22,8 @@ import java.util.Optional;
 public class TaskController {
     @Autowired
     TaskRepository taskRepository;
+
+    private static final Logger logger = LogManager.getLogger(TaskController.class);
 
     @GetMapping("/tasks")
     public ResponseEntity<List<Task>> getAllTasks(@RequestParam(required = false) String title) {
@@ -29,11 +33,14 @@ public class TaskController {
             taskRepository.findByTitleContaining(title).forEach(tasks::add);
 
             if (tasks.isEmpty()) {
+                logger.info("Получение всех Task по " + title);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
+            logger.info("Получение всех Task по " + title);
             return new ResponseEntity<>(tasks, HttpStatus.OK);
         } catch (Exception e) {
+            logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -43,8 +50,10 @@ public class TaskController {
         Optional<Task> taskData = taskRepository.findById(id);
 
         if (taskData.isPresent()) {
+            logger.info("Получение Task по " + id);
             return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
         } else {
+            logger.error("Ошибка 404 - NOT_FOUND");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -54,8 +63,10 @@ public class TaskController {
         try {
             Task _task = taskRepository
                     .save(new Task(task.getTitle(), task.getDescription()));
+            logger.info("Создание Task");
             return new ResponseEntity<>(_task, HttpStatus.CREATED);
         } catch (Exception e) {
+            logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -69,8 +80,10 @@ public class TaskController {
             _task.setTitle(task.getTitle());
             _task.setDescription(task.getDescription());
 
+            logger.info("Обновление Task по " + id);
             return new ResponseEntity<>(taskRepository.save(_task), HttpStatus.OK);
         } else {
+            logger.error("Ошибка 404 - NOT_FOUND");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -79,8 +92,10 @@ public class TaskController {
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") long id) {
         try {
             taskRepository.deleteById(id);
+            logger.info("Удаление Task по " + id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -89,8 +104,10 @@ public class TaskController {
     public ResponseEntity<HttpStatus> deleteAllTasks() {
         try {
             taskRepository.deleteAll();
+            logger.info("Удаление всех Task");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
+            logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 

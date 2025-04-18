@@ -14,6 +14,8 @@ import ru.efimov.DiplomFirst.repository.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @CrossOrigin(origins = "http://localhost:8083")
 @RestController
@@ -31,6 +33,8 @@ public class TaskAnalyzeController {
     @Autowired
     private TaskAnalyzeRepository taskAnalyzeRepository;
 
+    private static final Logger logger = LogManager.getLogger(TaskAnalyzeController.class);
+
 
     @GetMapping("/tasks/{taskId}/taskErrors")
     public ResponseEntity<Float> getAverageErrors(@PathVariable(value = "taskId") Long taskId
@@ -44,6 +48,8 @@ public class TaskAnalyzeController {
 
         float averageCount = (float) totalSum / lengthList;
 
+        logger.info("Получение среднего количество ошибок");
+
         return new ResponseEntity<>(averageCount, HttpStatus.CREATED);
     }
 
@@ -53,6 +59,7 @@ public class TaskAnalyzeController {
         List<TaskAnalyze> taskAnalyzes = taskAnalyzeRepository.findByTaskId(taskId);
 
         if (taskAnalyzes.size() != 1){
+            logger.error("Not found taskAnalyze with taskId = " + taskId);
             throw new ResourceNotFoundException("Not found taskAnalyze with taskId = " + taskId);
         }
         TaskAnalyze oldTaskAnalyze = taskAnalyzes.get(0);
@@ -71,6 +78,7 @@ public class TaskAnalyzeController {
             totalSum += t1.getCount_errors();
         }
         if (lengthList == 0){
+            logger.error("Not found TaskError");
             throw new ResourceNotFoundException("Not found TaskError");
         }
 
@@ -105,6 +113,7 @@ public class TaskAnalyzeController {
 
         }
         if (timeCount == 0){
+            logger.error("Not found TaskPassed");
             throw new ResourceNotFoundException("Not found TaskPassed");
         }
 
@@ -119,6 +128,7 @@ public class TaskAnalyzeController {
 
 
 
+        logger.info("Получение метрик заданий");
         return new ResponseEntity<>(newTaskAnalyze, HttpStatus.CREATED);
     }
 
@@ -129,6 +139,8 @@ public class TaskAnalyzeController {
     public ResponseEntity<TaskAnalyze> gettaskAnalyzeByStudentId(@PathVariable(value = "id") Long id) {
         TaskAnalyze taskAnalyze = taskAnalyzeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found taskAnalyze with id = " + id));
+
+        logger.info("Получение TaskAnalyze по " + id);
 
         return new ResponseEntity<>(taskAnalyze, HttpStatus.OK);
     }
@@ -141,6 +153,7 @@ public class TaskAnalyzeController {
             return taskAnalyzeRepository.save(taskAnalyzeRequest);
         }).orElseThrow(() -> new ResourceNotFoundException("Not found Task with id = " + taskId));
 
+        logger.info("Создание TaskAnalyze");
         return new ResponseEntity<>(taskAnalyze, HttpStatus.CREATED);
     }
 
@@ -154,6 +167,8 @@ public class TaskAnalyzeController {
         taskAnalyze.setDeadline(taskAnalyzeRequest.getDeadline());
         taskAnalyze.setCount_error(taskAnalyzeRequest.getCount_error());
 
+        logger.info("Обновление TaskAnalyze по " + id);
+
         return new ResponseEntity<>(taskAnalyzeRepository.save(taskAnalyze), HttpStatus.OK);
     }
 
@@ -161,16 +176,19 @@ public class TaskAnalyzeController {
     public ResponseEntity<HttpStatus> deleteTaskAnalyze(@PathVariable("id") long id) {
         taskAnalyzeRepository.deleteById(id);
 
+        logger.info("Удаление TaskAnalyze по " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/tasks/{taskId}/taskAnalyzes")
     public ResponseEntity<List<TaskAnalyze>> deleteAlltaskAnalyzesOftask(@PathVariable(value = "taskId") Long taskId) {
         if (!taskRepository.existsById(taskId)) {
+            logger.error("Not found Task with id = " + taskId);
             throw new ResourceNotFoundException("Not found Task with id = " + taskId);
         }
 
         taskAnalyzeRepository.deleteByTaskId(taskId);
+        logger.info("Удаление всех TaskAnalyze по " + taskId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

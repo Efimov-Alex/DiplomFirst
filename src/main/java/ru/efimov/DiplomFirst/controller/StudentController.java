@@ -17,6 +17,8 @@ import io.jsonwebtoken.Claims;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @CrossOrigin(origins = "http://localhost:8083")
 @RestController
@@ -25,6 +27,8 @@ public class StudentController {
 
     @Autowired
     StudentRepository studentRepository;
+
+    private static final Logger logger = LogManager.getLogger(StudentController.class);
 
     private UserService service;
 
@@ -40,9 +44,11 @@ public class StudentController {
         studentRepository.findAll().forEach(students::add);
 
         if (students.isEmpty()) {
+            logger.info("Получение всех объектов Student");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
+        logger.info("Получение всех объектов Student");
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
@@ -55,15 +61,18 @@ public class StudentController {
 
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
+        logger.info("Получение Student по" + id);
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
 
     @PostMapping("/students")
     public ResponseEntity<Student> createStudent(@RequestBody Student student) {
         Student _student = studentRepository.save(new Student(student.getUsername(), student.getPassword(), student.getDate_of_registration()));
+        logger.info("Создание Student" );
         return new ResponseEntity<>(_student, HttpStatus.CREATED);
     }
 
@@ -73,12 +82,15 @@ public class StudentController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + id));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(_student.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         _student.setUsername(student.getUsername());
         _student.setPassword(student.getPassword());
         _student.setDate_of_registration(student.getDate_of_registration());
+
+        logger.info("Обновление Student по" + id);
 
         return new ResponseEntity<>(studentRepository.save(_student), HttpStatus.OK);
     }
@@ -89,10 +101,13 @@ public class StudentController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + id));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         studentRepository.deleteById(id);
+
+        logger.info("Удаление Student по" + id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -100,6 +115,8 @@ public class StudentController {
     @DeleteMapping("/students")
     public ResponseEntity<HttpStatus> deleteAllStudents() {
         studentRepository.deleteAll();
+
+        logger.info("Удаление всех Student" );
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

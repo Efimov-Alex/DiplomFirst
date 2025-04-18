@@ -12,6 +12,8 @@ import ru.efimov.DiplomFirst.repository.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @CrossOrigin(origins = "http://localhost:8083")
 @RestController
@@ -36,6 +38,8 @@ public class UserAnalyzeController {
 
     @Autowired
     private CloseMaterialRepository closeMaterialRepository;
+
+    private static final Logger logger = LogManager.getLogger(UserAnalyzeController.class);
 
 
     @Autowired

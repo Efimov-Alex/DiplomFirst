@@ -13,6 +13,8 @@ import ru.efimov.DiplomFirst.repository.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @CrossOrigin(origins = "http://localhost:8083")
 @RestController
@@ -34,9 +36,12 @@ public class TaskPassedController {
     @Autowired
     private UserAnalyzeRepository userAnalyzeRepository;
 
+    private static final Logger logger = LogManager.getLogger(TaskPassedController.class);
+
     @GetMapping("/tasks/{taskId}/taskPassed")
     public ResponseEntity<List<TaskPassed>> getAllTasksPassedByTaskId(@PathVariable(value = "taskId") Long taskId) {
         if (!taskRepository.existsById(taskId)) {
+            logger.error("Not found Task with id = " + taskId);
             throw new ResourceNotFoundException("Not found Task with id = " + taskId);
         }
 
@@ -53,23 +58,27 @@ public class TaskPassedController {
         }
 
 
+        logger.info("Получение TaskPassed по " + taskId);
         return new ResponseEntity<>(taskPassedsCurStudent, HttpStatus.OK);
     }
 
     @GetMapping("/students/{studentId}/taskPassed")
     public ResponseEntity<List<TaskPassed>> getAllTasksPassedByStudentId(@PathVariable(value = "studentId") Long studentId) {
         if (!studentRepository.existsById(studentId)) {
+            logger.error("Not found Student with id = " + studentId);
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
         Student student1 = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
 
         List<TaskPassed> taskPasseds = taskPassedRepository.findByStudentId(studentId);
+        logger.info("Получение TaskPassed по " + studentId);
         return new ResponseEntity<>(taskPasseds, HttpStatus.OK);
     }
 
@@ -82,10 +91,12 @@ public class TaskPassedController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + taskPassed.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
 
+        logger.info("Получение TaskPassed по " + id);
         return new ResponseEntity<>(taskPassed, HttpStatus.OK);
     }
 
@@ -97,6 +108,7 @@ public class TaskPassedController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -109,12 +121,14 @@ public class TaskPassedController {
             student = optionalStudent.get();
         }
         else{
+            logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (optionalTask.isPresent()){
             task = optionalTask.get();
         }
         else{
+            logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -144,15 +158,21 @@ public class TaskPassedController {
         if ( 4 * listTaskErrorsByStudentAndTasks.size() >= 3 * Double.parseDouble(userAnalyzeCountErrors.getValue()) && listTaskErrorsByStudentAndTasks.size() <= 5 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
             System.out.println("Значение в пределах нормы");
             TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
+            logger.info("Значение в пределах нормы");
+            logger.info("Создание TaskPassed");
             return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
         }
         else if (2 * listTaskErrorsByStudentAndTasks.size() <  Double.parseDouble(userAnalyzeCountErrors.getValue()) || listTaskErrorsByStudentAndTasks.size() > 3 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
             System.out.println("Значение сильно отличаются, это другой человек.");
+            logger.error("Значение сильно отличаются, это другой человек");
+            logger.error("Создание TaskPassed");
             return new ResponseEntity<>(taskPassed, HttpStatus.CREATED);
             //TaskError _taskError = taskErrorRepository.save(taskError);
         }
         else {
             System.out.println("Значение в отличаюся от нормальных, но не сильно.");
+            logger.info("Значение в отличаюся от нормальных, но не сильно");
+            logger.info("Создание TaskPassed");
             TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
             return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
         }
@@ -173,11 +193,13 @@ public class TaskPassedController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + taskPassed.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         taskPassed.setDate_of_passed(taskPassedRequest.getDate_of_passed());
 
+        logger.info("Обновление TaskPassed по " + id);
         return new ResponseEntity<>(taskPassedRepository.save(taskPassed), HttpStatus.OK);
     }
 
@@ -190,11 +212,13 @@ public class TaskPassedController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + taskPassed.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         taskPassedRepository.deleteById(id);
 
+        logger.info("Удаление TaskPassed по " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -207,11 +231,13 @@ public class TaskPassedController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
 
         taskPassedRepository.deleteByStudentId(studentId);
+        logger.info("Удаление всех TaskPassed по " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -228,10 +254,12 @@ public class TaskPassedController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + taskPassed.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         taskPassedRepository.deleteByTaskId(taskId);
+        logger.info("Удаление TaskPassed по " + taskId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

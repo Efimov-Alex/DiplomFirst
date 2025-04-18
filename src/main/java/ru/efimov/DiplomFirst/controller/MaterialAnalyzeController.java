@@ -11,6 +11,8 @@ import ru.efimov.DiplomFirst.repository.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @CrossOrigin(origins = "http://localhost:8083")
 @RestController
@@ -29,7 +31,7 @@ public class MaterialAnalyzeController {
     @Autowired
     private CloseMaterialRepository closeMaterialRepository;
 
-
+    private static final Logger logger = LogManager.getLogger(MaterialAnalyzeController.class);
 
 
 
@@ -40,6 +42,7 @@ public class MaterialAnalyzeController {
         List<MaterialAnalyze> materialAnalyzes = materialAnalyzeRepository.findByMaterialId(materialId);
 
         if (materialAnalyzes.size() != 1){
+            logger.error("Not found materialAnalyze with materialId = " + materialId);
             throw new ResourceNotFoundException("Not found materialAnalyze with materialId = " + materialId);
         }
         MaterialAnalyze oldMaterialAnalyze = materialAnalyzes.get(0);
@@ -86,6 +89,7 @@ public class MaterialAnalyzeController {
             else{
                 List<OpenMaterial> list1 = map.get(o1.getStudent().getId());
                 if (list1.size() == 0){
+                    logger.error("Not found OpenMaterial");
                     throw new ResourceNotFoundException("Not found OpenMaterial");
                 }
                 OpenMaterial o2 = list1.remove(list1.size()-1);
@@ -108,6 +112,7 @@ public class MaterialAnalyzeController {
         newMaterialAnalyze.setMean_time(oldMaterialAnalyze.getMean_time());
 
         if (timeCount == 0){
+            logger.error("Not found OpenMaterial");
             throw new ResourceNotFoundException("Not found OpenMaterial");
         }
 
@@ -119,6 +124,7 @@ public class MaterialAnalyzeController {
 
 
 
+        logger.info("Вывод метрик материалов ");
         return new ResponseEntity<>(newMaterialAnalyze, HttpStatus.CREATED);
     }
 
@@ -131,6 +137,7 @@ public class MaterialAnalyzeController {
         MaterialAnalyze materialAnalyze = materialAnalyzeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found materialAnalyze with id = " + id));
 
+        logger.info("Получение MaterialAnalyze по " + id);
         return new ResponseEntity<>(materialAnalyze, HttpStatus.OK);
     }
 
@@ -142,6 +149,7 @@ public class MaterialAnalyzeController {
             return materialAnalyzeRepository.save(materialAnalyzeRequest);
         }).orElseThrow(() -> new ResourceNotFoundException("Not found Material with id = " + materialId));
 
+        logger.info("Создание MaterialAnalyze по " + materialId);
         return new ResponseEntity<>(materialAnalyze, HttpStatus.CREATED);
     }
 
@@ -152,6 +160,7 @@ public class MaterialAnalyzeController {
 
         materialAnalyze.setMean_time(materialAnalyzeRequest.getMean_time());
 
+        logger.info("Обновление MaterialAnalyze по " + id);
         return new ResponseEntity<>(materialAnalyzeRepository.save(materialAnalyze), HttpStatus.OK);
     }
 
@@ -159,16 +168,19 @@ public class MaterialAnalyzeController {
     public ResponseEntity<HttpStatus> deleteMaterislAnalyze(@PathVariable("id") long id) {
         materialAnalyzeRepository.deleteById(id);
 
+        logger.info("Удаление MaterialAnalyze по " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/materials/{materialId}/materialAnalyzes")
     public ResponseEntity<List<MaterialAnalyze>> deleteAllmaterialAnalyzesOfMaterial(@PathVariable(value = "materialId") Long materialId) {
         if (!materialRepository.existsById(materialId)) {
+            logger.error("Not found Material with id = " + materialId);
             throw new ResourceNotFoundException("Not found Material with id = " + materialId);
         }
 
         materialAnalyzeRepository.deleteByMaterialId(materialId);
+        logger.info("Удаление всех MaterialAnalyze по " + materialId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

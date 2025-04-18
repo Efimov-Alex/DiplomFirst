@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 @CrossOrigin(origins = "http://localhost:8083")
 @RestController
@@ -34,9 +37,12 @@ public class CloseMaterialController {
     @Autowired
     private CloseMaterialRepository closeMaterialRepository;
 
+    private static final Logger logger = LogManager.getLogger(CloseMaterialController.class);
+
     @GetMapping("/materials/{materialId}/closeMaterials")
     public ResponseEntity<List<CloseMaterial>> getAllCloseMaterialsByMaterialId(@PathVariable(value = "materialId") Long materialId) {
         if (!materialRepository.existsById(materialId)) {
+            logger.error("Not found Material with id = " + materialId);
             throw new ResourceNotFoundException("Not found Material with id = " + materialId);
         }
 
@@ -51,12 +57,14 @@ public class CloseMaterialController {
                 closeMaterialsCurStudent.add(c1);
             }
         }
+        logger.info("Получение всех объектов CloseMaterial по " + materialId);
         return new ResponseEntity<>(closeMaterialsCurStudent, HttpStatus.OK);
     }
 
     @GetMapping("/students/{studentId}/closeMaterials")
     public ResponseEntity<List<CloseMaterial>> getAllCloseMaterialsByStudentId(@PathVariable(value = "studentId") Long studentId) {
         if (!studentRepository.existsById(studentId)) {
+            logger.error("Not found Student with id = " + studentId);
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
         Student student1 = studentRepository.findById(studentId)
@@ -68,6 +76,7 @@ public class CloseMaterialController {
 
 
         List<CloseMaterial> closeMaterials = closeMaterialRepository.findByStudentId(studentId);
+        logger.info("Получение всех объектов CloseMaterial по " + studentId);
         return new ResponseEntity<>(closeMaterials, HttpStatus.OK);
     }
 
@@ -80,8 +89,10 @@ public class CloseMaterialController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + closeMaterial.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
+        logger.info("Получение объекта CloseMaterial по " + id);
 
         return new ResponseEntity<>(closeMaterial, HttpStatus.OK);
     }
@@ -94,6 +105,7 @@ public class CloseMaterialController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -106,12 +118,14 @@ public class CloseMaterialController {
             student = optionalStudent.get();
         }
         else{
+            logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
         if (optionalMaterial.isPresent()){
             material = optionalMaterial.get();
         }
         else{
+            logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -119,6 +133,8 @@ public class CloseMaterialController {
         CloseMaterial closeMaterial = new CloseMaterial(student, material, closeMaterialRequest.getDate_of_close());
 
         CloseMaterial _closeMaterial = closeMaterialRepository.save(closeMaterial);
+
+        logger.info("Успешное создание объекта CloseMaterial" );
 
         return new ResponseEntity<>(_closeMaterial, HttpStatus.CREATED);
     }
@@ -137,6 +153,8 @@ public class CloseMaterialController {
 
         closeMaterial.setDate_of_close(closeMaterialRequest.getDate_of_close());
 
+        logger.info("Обновление объекта CloseMaterial по " + id);
+
         return new ResponseEntity<>(closeMaterialRepository.save(closeMaterial), HttpStatus.OK);
     }
 
@@ -149,10 +167,13 @@ public class CloseMaterialController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + closeMaterial.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         closeMaterialRepository.deleteById(id);
+
+        logger.info("Удаление объекта CloseMaterial по " + id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -166,11 +187,14 @@ public class CloseMaterialController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
 
         closeMaterialRepository.deleteByStudentId(studentId);
+
+        logger.info("Удаление объектов CloseMaterial по " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -181,6 +205,7 @@ public class CloseMaterialController {
         }
 
         closeMaterialRepository.deleteByMaterialId(materialId);
+        logger.info("Удаление объектов CloseMaterial по " + materialId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

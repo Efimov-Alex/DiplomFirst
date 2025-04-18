@@ -16,6 +16,8 @@ import ru.efimov.DiplomFirst.repository.StudentRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @CrossOrigin(origins = "http://localhost:8083")
 @RestController
@@ -28,20 +30,25 @@ public class ExitController {
     @Autowired
     private ExitRepository exitRepository;
 
+    private static final Logger logger = LogManager.getLogger(ExitController.class);
+
     @GetMapping("/students/{studentId}/exits")
     public ResponseEntity<List<Exit>> getAllExitsByStudentId(@PathVariable(value = "studentId") Long studentId) {
         if (!studentRepository.existsById(studentId)) {
+            logger.error("Not found Student with id = " + studentId);
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
         Student student1 = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
 
         List<Exit> exits = exitRepository.findByStudentId(studentId);
+        logger.info("Получение всех объектов Enter по " + studentId);
         return new ResponseEntity<>(exits, HttpStatus.OK);
     }
 
@@ -54,9 +61,11 @@ public class ExitController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + exit.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
+        logger.info("Получение объекта Enter по " + id);
         return new ResponseEntity<>(exit, HttpStatus.OK);
     }
 
@@ -67,6 +76,7 @@ public class ExitController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -76,6 +86,7 @@ public class ExitController {
             return exitRepository.save(exitRequest);
         }).orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
+        logger.info("Создание объекта Enter по " + studentId);
         return new ResponseEntity<>(exit, HttpStatus.CREATED);
     }
 
@@ -88,11 +99,13 @@ public class ExitController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + exit.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         exit.setDate_of_exit(exitRequest.getDate_of_exit());
 
+        logger.info("Обновление объекта Enter по " + id);
         return new ResponseEntity<>(exitRepository.save(exit), HttpStatus.OK);
     }
 
@@ -105,29 +118,34 @@ public class ExitController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + exit.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         exitRepository.deleteById(id);
 
+        logger.info("Удаление объекта Enter по " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/students/{studentId}/exits")
     public ResponseEntity<List<Exit>> deleteAllExitsOfStudent(@PathVariable(value = "studentId") Long studentId) {
         if (!studentRepository.existsById(studentId)) {
+            logger.error("Not found Student with id = " + studentId);
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
         Student student1 = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
 
 
         exitRepository.deleteByStudentId(studentId);
+        logger.info("Удаление всех Enter по " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

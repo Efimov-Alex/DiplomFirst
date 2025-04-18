@@ -17,6 +17,8 @@ import ru.efimov.DiplomFirst.repository.StudentRepository;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 
 @CrossOrigin(origins = "http://localhost:8083")
@@ -30,20 +32,25 @@ public class EnterController {
     @Autowired
     private EnterRepository enterRepository;
 
+    private static final Logger logger = LogManager.getLogger(EnterController.class);
+
     @GetMapping("/students/{studentId}/enters")
     public ResponseEntity<List<Enter>> getAllEntersByStudentId(@PathVariable(value = "studentId") Long studentId) {
         if (!studentRepository.existsById(studentId)) {
+            logger.error("Not found Student with id = " + studentId);
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
 
         List<Enter> enters = enterRepository.findByStudentId(studentId);
+        logger.info("Получение всех объектов Enter по " + studentId);
         return new ResponseEntity<>(enters, HttpStatus.OK);
     }
 
@@ -56,9 +63,11 @@ public class EnterController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + enter.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
+        logger.info("Получение всех объектов Enter по " + id);
         return new ResponseEntity<>(enter, HttpStatus.OK);
     }
 
@@ -69,6 +78,7 @@ public class EnterController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -78,6 +88,7 @@ public class EnterController {
             return enterRepository.save(enterRequest);
         }).orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
+        logger.info("Создание объекта Enter по " + studentId);
         return new ResponseEntity<>(enter, HttpStatus.CREATED);
     }
 
@@ -90,11 +101,13 @@ public class EnterController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + enter.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         enter.setDate_of_enter(enterRequest.getDate_of_enter());
 
+        logger.info("Обновление объекта Enter по " + id);
         return new ResponseEntity<>(enterRepository.save(enter), HttpStatus.OK);
     }
 
@@ -107,27 +120,32 @@ public class EnterController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + enter.getStudent().getId()));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         enterRepository.deleteById(id);
 
+        logger.info("Удаление объекта Enter по " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/students/{studentId}/enters")
     public ResponseEntity<List<Enter>> deleteAllEntersOfStudent(@PathVariable(value = "studentId") Long studentId) {
         if (!studentRepository.existsById(studentId)) {
+            logger.error("Not found Student with id = " + studentId);
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
         Student student1 = studentRepository.findById(studentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         enterRepository.deleteByStudentId(studentId);
+        logger.info("Удаление всех объектов Enter по " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
