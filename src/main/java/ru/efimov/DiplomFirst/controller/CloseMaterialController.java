@@ -57,7 +57,7 @@ public class CloseMaterialController {
                 closeMaterialsCurStudent.add(c1);
             }
         }
-        logger.info("Получение всех объектов CloseMaterial по " + materialId);
+        logger.info("Получение всех объектов CloseMaterial по material " + materialId);
         return new ResponseEntity<>(closeMaterialsCurStudent, HttpStatus.OK);
     }
 
@@ -76,7 +76,7 @@ public class CloseMaterialController {
 
 
         List<CloseMaterial> closeMaterials = closeMaterialRepository.findByStudentId(studentId);
-        logger.info("Получение всех объектов CloseMaterial по " + studentId);
+        logger.info("Получение всех объектов CloseMaterial по studentId " + studentId);
         return new ResponseEntity<>(closeMaterials, HttpStatus.OK);
     }
 
@@ -92,7 +92,7 @@ public class CloseMaterialController {
             logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        logger.info("Получение объекта CloseMaterial по " + id);
+        logger.info("Получение объекта CloseMaterial по id " + id);
 
         return new ResponseEntity<>(closeMaterial, HttpStatus.OK);
     }
@@ -153,7 +153,7 @@ public class CloseMaterialController {
 
         closeMaterial.setDate_of_close(closeMaterialRequest.getDate_of_close());
 
-        logger.info("Обновление объекта CloseMaterial по " + id);
+        logger.info("Обновление объекта CloseMaterial по id " + id);
 
         return new ResponseEntity<>(closeMaterialRepository.save(closeMaterial), HttpStatus.OK);
     }
@@ -173,7 +173,7 @@ public class CloseMaterialController {
 
         closeMaterialRepository.deleteById(id);
 
-        logger.info("Удаление объекта CloseMaterial по " + id);
+        logger.info("Удаление объекта CloseMaterial по id " + id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -194,7 +194,7 @@ public class CloseMaterialController {
 
         closeMaterialRepository.deleteByStudentId(studentId);
 
-        logger.info("Удаление объектов CloseMaterial по " + studentId);
+        logger.info("Удаление объектов CloseMaterial по studentId " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -205,7 +205,7 @@ public class CloseMaterialController {
         }
 
         closeMaterialRepository.deleteByMaterialId(materialId);
-        logger.info("Удаление объектов CloseMaterial по " + materialId);
+        logger.info("Удаление объектов CloseMaterial по materialId " + materialId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

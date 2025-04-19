@@ -137,7 +137,7 @@ public class MaterialAnalyzeController {
         MaterialAnalyze materialAnalyze = materialAnalyzeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found materialAnalyze with id = " + id));
 
-        logger.info("Получение MaterialAnalyze по " + id);
+        logger.info("Получение MaterialAnalyze по id " + id);
         return new ResponseEntity<>(materialAnalyze, HttpStatus.OK);
     }
 
@@ -149,7 +149,7 @@ public class MaterialAnalyzeController {
             return materialAnalyzeRepository.save(materialAnalyzeRequest);
         }).orElseThrow(() -> new ResourceNotFoundException("Not found Material with id = " + materialId));
 
-        logger.info("Создание MaterialAnalyze по " + materialId);
+        logger.info("Создание MaterialAnalyze по materialId " + materialId);
         return new ResponseEntity<>(materialAnalyze, HttpStatus.CREATED);
     }
 
@@ -160,7 +160,7 @@ public class MaterialAnalyzeController {
 
         materialAnalyze.setMean_time(materialAnalyzeRequest.getMean_time());
 
-        logger.info("Обновление MaterialAnalyze по " + id);
+        logger.info("Обновление MaterialAnalyze по id " + id);
         return new ResponseEntity<>(materialAnalyzeRepository.save(materialAnalyze), HttpStatus.OK);
     }
 
@@ -168,7 +168,7 @@ public class MaterialAnalyzeController {
     public ResponseEntity<HttpStatus> deleteMaterislAnalyze(@PathVariable("id") long id) {
         materialAnalyzeRepository.deleteById(id);
 
-        logger.info("Удаление MaterialAnalyze по " + id);
+        logger.info("Удаление MaterialAnalyze по id " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -180,7 +180,7 @@ public class MaterialAnalyzeController {
         }
 
         materialAnalyzeRepository.deleteByMaterialId(materialId);
-        logger.info("Удаление всех MaterialAnalyze по " + materialId);
+        logger.info("Удаление всех MaterialAnalyze по materialId " + materialId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

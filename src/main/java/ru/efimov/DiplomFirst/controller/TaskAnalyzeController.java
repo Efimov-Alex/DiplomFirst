@@ -140,7 +140,7 @@ public class TaskAnalyzeController {
         TaskAnalyze taskAnalyze = taskAnalyzeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found taskAnalyze with id = " + id));
 
-        logger.info("Получение TaskAnalyze по " + id);
+        logger.info("Получение TaskAnalyze по id " + id);
 
         return new ResponseEntity<>(taskAnalyze, HttpStatus.OK);
     }
@@ -167,7 +167,7 @@ public class TaskAnalyzeController {
         taskAnalyze.setDeadline(taskAnalyzeRequest.getDeadline());
         taskAnalyze.setCount_error(taskAnalyzeRequest.getCount_error());
 
-        logger.info("Обновление TaskAnalyze по " + id);
+        logger.info("Обновление TaskAnalyze по id " + id);
 
         return new ResponseEntity<>(taskAnalyzeRepository.save(taskAnalyze), HttpStatus.OK);
     }
@@ -176,7 +176,7 @@ public class TaskAnalyzeController {
     public ResponseEntity<HttpStatus> deleteTaskAnalyze(@PathVariable("id") long id) {
         taskAnalyzeRepository.deleteById(id);
 
-        logger.info("Удаление TaskAnalyze по " + id);
+        logger.info("Удаление TaskAnalyze по id " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -188,7 +188,7 @@ public class TaskAnalyzeController {
         }
 
         taskAnalyzeRepository.deleteByTaskId(taskId);
-        logger.info("Удаление всех TaskAnalyze по " + taskId);
+        logger.info("Удаление всех TaskAnalyze по taskId " + taskId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

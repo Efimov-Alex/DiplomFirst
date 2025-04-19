@@ -33,7 +33,7 @@ public class MaterialController {
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
-            logger.info("Получение всех Material по " + title);
+            logger.info("Получение всех Material по title " + title);
             return new ResponseEntity<>(materials, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
@@ -46,7 +46,7 @@ public class MaterialController {
         Optional<Material> materialData = materialRepository.findById(id);
 
         if (materialData.isPresent()) {
-            logger.info("Получение Material по " + id);
+            logger.info("Получение Material по id " + id);
             return new ResponseEntity<>(materialData.get(), HttpStatus.OK);
         } else {
             logger.error("Ошибка 404 - NOT_FOUND");
@@ -76,7 +76,7 @@ public class MaterialController {
             _material.setTitle(material.getTitle());
             _material.setDescription(material.getDescription());
 
-            logger.info("Обновление Material по " + id);
+            logger.info("Обновление Material по id " + id);
             return new ResponseEntity<>(materialRepository.save(_material), HttpStatus.OK);
         } else {
             logger.error("Ошибка 404 - NOT_FOUND");
@@ -88,7 +88,7 @@ public class MaterialController {
     public ResponseEntity<HttpStatus> deleteMaterial(@PathVariable("id") long id) {
         try {
             materialRepository.deleteById(id);
-            logger.info("Удаление Material по " + id);
+            logger.info("Удаление Material по id " + id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
@@ -100,7 +100,7 @@ public class MaterialController {
     public ResponseEntity<HttpStatus> deleteAllMaterials() {
         try {
             materialRepository.deleteAll();
-            logger.info("Elfktybt всех Material ");
+            logger.info("Удаление всех Material ");
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");

@@ -58,7 +58,7 @@ public class TaskPassedController {
         }
 
 
-        logger.info("Получение TaskPassed по " + taskId);
+        logger.info("Получение TaskPassed по taskId" + taskId);
         return new ResponseEntity<>(taskPassedsCurStudent, HttpStatus.OK);
     }
 
@@ -78,7 +78,7 @@ public class TaskPassedController {
 
 
         List<TaskPassed> taskPasseds = taskPassedRepository.findByStudentId(studentId);
-        logger.info("Получение TaskPassed по " + studentId);
+        logger.info("Получение TaskPassed по studentId" + studentId);
         return new ResponseEntity<>(taskPasseds, HttpStatus.OK);
     }
 
@@ -96,7 +96,7 @@ public class TaskPassedController {
         }
 
 
-        logger.info("Получение TaskPassed по " + id);
+        logger.info("Получение TaskPassed по id " + id);
         return new ResponseEntity<>(taskPassed, HttpStatus.OK);
     }
 
@@ -199,7 +199,7 @@ public class TaskPassedController {
 
         taskPassed.setDate_of_passed(taskPassedRequest.getDate_of_passed());
 
-        logger.info("Обновление TaskPassed по " + id);
+        logger.info("Обновление TaskPassed по id " + id);
         return new ResponseEntity<>(taskPassedRepository.save(taskPassed), HttpStatus.OK);
     }
 
@@ -218,7 +218,7 @@ public class TaskPassedController {
 
         taskPassedRepository.deleteById(id);
 
-        logger.info("Удаление TaskPassed по " + id);
+        logger.info("Удаление TaskPassed по id " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -237,7 +237,7 @@ public class TaskPassedController {
 
 
         taskPassedRepository.deleteByStudentId(studentId);
-        logger.info("Удаление всех TaskPassed по " + studentId);
+        logger.info("Удаление всех TaskPassed по studentId " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -259,7 +259,7 @@ public class TaskPassedController {
         }
 
         taskPassedRepository.deleteByTaskId(taskId);
-        logger.info("Удаление TaskPassed по " + taskId);
+        logger.info("Удаление TaskPassed по taskId " + taskId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

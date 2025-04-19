@@ -50,7 +50,7 @@ public class EnterController {
 
 
         List<Enter> enters = enterRepository.findByStudentId(studentId);
-        logger.info("Получение всех объектов Enter по " + studentId);
+        logger.info("Получение всех объектов Enter по studentId " + studentId);
         return new ResponseEntity<>(enters, HttpStatus.OK);
     }
 
@@ -67,7 +67,7 @@ public class EnterController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        logger.info("Получение всех объектов Enter по " + id);
+        logger.info("Получение всех объектов Enter по id " + id);
         return new ResponseEntity<>(enter, HttpStatus.OK);
     }
 
@@ -88,7 +88,7 @@ public class EnterController {
             return enterRepository.save(enterRequest);
         }).orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
-        logger.info("Создание объекта Enter по " + studentId);
+        logger.info("Создание объекта Enter по studentId " + studentId);
         return new ResponseEntity<>(enter, HttpStatus.CREATED);
     }
 
@@ -107,7 +107,7 @@ public class EnterController {
 
         enter.setDate_of_enter(enterRequest.getDate_of_enter());
 
-        logger.info("Обновление объекта Enter по " + id);
+        logger.info("Обновление объекта Enter по id " + id);
         return new ResponseEntity<>(enterRepository.save(enter), HttpStatus.OK);
     }
 
@@ -126,7 +126,7 @@ public class EnterController {
 
         enterRepository.deleteById(id);
 
-        logger.info("Удаление объекта Enter по " + id);
+        logger.info("Удаление объекта Enter по id " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -145,7 +145,7 @@ public class EnterController {
         }
 
         enterRepository.deleteByStudentId(studentId);
-        logger.info("Удаление всех объектов Enter по " + studentId);
+        logger.info("Удаление всех объектов Enter по studentId " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

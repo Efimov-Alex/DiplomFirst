@@ -33,11 +33,11 @@ public class TaskController {
             taskRepository.findByTitleContaining(title).forEach(tasks::add);
 
             if (tasks.isEmpty()) {
-                logger.info("Получение всех Task по " + title);
+                logger.info("Получение всех Task по title " + title);
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
             }
 
-            logger.info("Получение всех Task по " + title);
+            logger.info("Получение всех Task по title " + title);
             return new ResponseEntity<>(tasks, HttpStatus.OK);
         } catch (Exception e) {
             logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");
@@ -50,7 +50,7 @@ public class TaskController {
         Optional<Task> taskData = taskRepository.findById(id);
 
         if (taskData.isPresent()) {
-            logger.info("Получение Task по " + id);
+            logger.info("Получение Task по id " + id);
             return new ResponseEntity<>(taskData.get(), HttpStatus.OK);
         } else {
             logger.error("Ошибка 404 - NOT_FOUND");
@@ -80,7 +80,7 @@ public class TaskController {
             _task.setTitle(task.getTitle());
             _task.setDescription(task.getDescription());
 
-            logger.info("Обновление Task по " + id);
+            logger.info("Обновление Task по id " + id);
             return new ResponseEntity<>(taskRepository.save(_task), HttpStatus.OK);
         } else {
             logger.error("Ошибка 404 - NOT_FOUND");
@@ -92,7 +92,7 @@ public class TaskController {
     public ResponseEntity<HttpStatus> deleteTask(@PathVariable("id") long id) {
         try {
             taskRepository.deleteById(id);
-            logger.info("Удаление Task по " + id);
+            logger.info("Удаление Task по id " + id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (Exception e) {
             logger.error("Ошибка 500 - INTERNAL_SERVER_ERROR");

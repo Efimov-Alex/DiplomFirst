@@ -60,12 +60,14 @@ public class UserAnalyzeController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN" );
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
         List<UserAnalyze> userAnalyzes = userAnalyzeRepository.findByStudentId(studentId);
 
         if (userAnalyzes.size() ==0){
+            logger.error("Not found userAnalyze with studentId = " + studentId);
             throw new ResourceNotFoundException("Not found userAnalyze with studentId = " + studentId);
         }
         UserAnalyze newUserAnalyzeErrors = null;
@@ -81,6 +83,7 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeErrors == null){
+            logger.error("Not found userAnalyze with Characteristic = " + "Колличество ошибок");
             throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Колличество ошибок");
         }
 
@@ -95,6 +98,7 @@ public class UserAnalyzeController {
         }
 
         if (lengthList == 0){
+            logger.error("Not found TaskError");
             throw new ResourceNotFoundException("Not found TaskError");
         }
 
@@ -126,6 +130,7 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeFailAttempts == null){
+            logger.error("Not found userAnalyze with Characteristic = " + "Колличество попыток перед сдачей");
             throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Колличество попыток перед сдачей");
         }
 
@@ -145,6 +150,7 @@ public class UserAnalyzeController {
         }
 
         if (mapAttemptsPerTask.size() == 0){
+            logger.error("Not found TaskError");
             throw new ResourceNotFoundException("Not found TaskError");
         }
 
@@ -175,6 +181,7 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeTimesRepairError == null){
+            logger.error("Not found userAnalyze with Characteristic = " + "Время между неуспешными попытками");
             throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время между неуспешными попытками");
         }
 
@@ -229,6 +236,7 @@ public class UserAnalyzeController {
         }
 
         if (totalCountRepairErrors == 0){
+            logger.error("Not found TaskError");
             throw new ResourceNotFoundException("Not found TaskError");
         }
 
@@ -258,6 +266,7 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeTimeBetweenFirstTryAndPassed == null){
+            logger.error("Not found userAnalyze with Characteristic = " + "Время на исправление ошибок");
             throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время на исправление ошибок");
         }
 
@@ -295,6 +304,7 @@ public class UserAnalyzeController {
         }
 
         if (totalCountBetweenFirstTryAndPassed == 0){
+            logger.error("Not found TaskPassed");
             throw new ResourceNotFoundException("Not found TaskPassed");
         }
 
@@ -332,6 +342,7 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeTimeOnMaterials == null){
+            logger.error("Not found userAnalyze with Characteristic = " + "Время на чтение материалов");
             throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время на чтение материалов");
         }
 
@@ -377,6 +388,7 @@ public class UserAnalyzeController {
             else{
                 List<OpenMaterial> list1 = map.get(o1.getStudent().getId());
                 if (list1.size() == 0){
+                    logger.error("Not found OpenMaterial");
                     throw new ResourceNotFoundException("Not found OpenMaterial");
                 }
                 OpenMaterial o2 = list1.remove(list1.size()-1);
@@ -395,6 +407,7 @@ public class UserAnalyzeController {
         }
 
         if (timeCount == 0){
+            logger.error("Not found CloseMaterial");
             throw new ResourceNotFoundException("Not found CloseMaterial");
         }
 
@@ -428,6 +441,7 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeTimeOnEnter == null){
+            logger.error("Not found userAnalyze with Characteristic = " + "Время на чтение материалов");
             throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время на чтение материалов");
         }
 
@@ -491,6 +505,7 @@ public class UserAnalyzeController {
         }
 
         if (timeCount == 0){
+            logger.error("Not found Exit");
             throw new ResourceNotFoundException("Not found Exit");
         }
 
@@ -509,6 +524,7 @@ public class UserAnalyzeController {
 
 
 
+        logger.info("Вывод всех метрик студента ");
 
         return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
@@ -522,6 +538,7 @@ public class UserAnalyzeController {
         UserAnalyze userAnalyze = userAnalyzeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Not found UserAnalyze with id = " + id));
 
+        logger.info("Получение объекта UserAnalyze по id " + id);
         return new ResponseEntity<>(userAnalyze, HttpStatus.OK);
     }
 
@@ -532,6 +549,7 @@ public class UserAnalyzeController {
                 .orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
         if (!SecurityContextHolder.getContext().getAuthentication().getPrincipal().equals(student1.getUsername())){
+            logger.error("Ошибка 403 - FORBIDDEN");
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
@@ -541,6 +559,7 @@ public class UserAnalyzeController {
             return userAnalyzeRepository.save(userAnalyzeRequest);
         }).orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
+        logger.info("Создание объекта UserAnalyze по studentId " + studentId);
         return new ResponseEntity<>(userAnalyze, HttpStatus.CREATED);
     }
 
@@ -552,6 +571,7 @@ public class UserAnalyzeController {
         userAnalyze.setCharacteristic(userAnalyzeRequest.getCharacteristic());
         userAnalyze.setValue(userAnalyzeRequest.getValue());
 
+        logger.info("Обновление объекта UserAnalyze  ");
         return new ResponseEntity<>(userAnalyzeRepository.save(userAnalyze), HttpStatus.OK);
     }
 
@@ -559,12 +579,14 @@ public class UserAnalyzeController {
     public ResponseEntity<HttpStatus> deleteUserAnalyze(@PathVariable("id") long id) {
         userAnalyzeRepository.deleteById(id);
 
+        logger.info("Удаление объекта UserAnalyze по id " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @DeleteMapping("/students/{studentId}/userAnalyzes")
     public ResponseEntity<List<UserAnalyze>> deleteAlluserAnalyzesOfStudent(@PathVariable(value = "studentId") Long studentId) {
         if (!studentRepository.existsById(studentId)) {
+            logger.error("Not found Student with id = " + studentId);
             throw new ResourceNotFoundException("Not found Student with id = " + studentId);
         }
         Student student1 = studentRepository.findById(studentId)
@@ -576,6 +598,7 @@ public class UserAnalyzeController {
 
 
         userAnalyzeRepository.deleteByStudentId(studentId);
+        logger.info("Удаление объектов UserAnalyze по studentId " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

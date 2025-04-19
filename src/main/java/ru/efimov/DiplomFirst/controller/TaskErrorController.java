@@ -53,7 +53,7 @@ public class TaskErrorController {
             }
         }
 
-        logger.info("Получение TaskError по" + taskId);
+        logger.info("Получение TaskError по taskId " + taskId);
         return new ResponseEntity<>(taskErrorsCurStudent, HttpStatus.OK);
     }
 
@@ -73,7 +73,7 @@ public class TaskErrorController {
 
 
         List<TaskError> taskErrors = taskErrorRepository.findByStudentId(studentId);
-        logger.info("Получение TaskError по" + studentId);
+        logger.info("Получение TaskError по studentId " + studentId);
         return new ResponseEntity<>(taskErrors, HttpStatus.OK);
     }
 
@@ -90,7 +90,7 @@ public class TaskErrorController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        logger.info("Получение TaskError по" + id);
+        logger.info("Получение TaskError по id " + id);
         return new ResponseEntity<>(taskError, HttpStatus.OK);
     }
 
@@ -194,7 +194,7 @@ public class TaskErrorController {
         taskError.setDate_of_error(taskErrorRequest.getDate_of_error());
         taskError.setCount_errors(taskErrorRequest.getCount_errors());
 
-        logger.info("Обновление TaskError по" + id);
+        logger.info("Обновление TaskError по id " + id);
         return new ResponseEntity<>(taskErrorRepository.save(taskError), HttpStatus.OK);
     }
 
@@ -213,7 +213,7 @@ public class TaskErrorController {
 
         taskErrorRepository.deleteById(id);
 
-        logger.info("Удаление TaskError по" + id);
+        logger.info("Удаление TaskError по id " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -233,7 +233,7 @@ public class TaskErrorController {
 
 
         taskErrorRepository.deleteByStudentId(studentId);
-        logger.info("Удаление всех TaskError по" + studentId);
+        logger.info("Удаление всех TaskError по studentId " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -256,7 +256,7 @@ public class TaskErrorController {
 
 
         taskErrorRepository.deleteByTaskId(taskId);
-        logger.info("Удаление всех TaskError по" + taskId);
+        logger.info("Удаление всех TaskError по taskId" + taskId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

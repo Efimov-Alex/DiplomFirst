@@ -54,7 +54,7 @@ public class OpenMaterialController {
             }
         }
 
-        logger.info("Получение всех OpenMaterial по " + materialId);
+        logger.info("Получение всех OpenMaterial по materialId " + materialId);
         return new ResponseEntity<>(openMaterialsCurStudent, HttpStatus.OK);
     }
 
@@ -74,7 +74,7 @@ public class OpenMaterialController {
 
 
         List<OpenMaterial> openMaterials = openMaterialRepository.findByStudentId(studentId);
-        logger.info("Получение всех OpenMaterial по " + studentId);
+        logger.info("Получение всех OpenMaterial по studentId " + studentId);
         return new ResponseEntity<>(openMaterials, HttpStatus.OK);
     }
 
@@ -91,7 +91,7 @@ public class OpenMaterialController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        logger.info("Получение OpenMaterial по " + id);
+        logger.info("Получение OpenMaterial по id " + id);
         return new ResponseEntity<>(openMaterial, HttpStatus.OK);
     }
 
@@ -150,7 +150,7 @@ public class OpenMaterialController {
 
         openMaterial.setDate_of_open(openMaterialRequest.getDate_of_open());
 
-        logger.info("Обновление OpenMaterial по " + id);
+        logger.info("Обновление OpenMaterial по id " + id);
         return new ResponseEntity<>(openMaterialRepository.save(openMaterial), HttpStatus.OK);
     }
 
@@ -169,7 +169,7 @@ public class OpenMaterialController {
 
         openMaterialRepository.deleteById(id);
 
-        logger.info("Удаление OpenMaterial по " + id);
+        logger.info("Удаление OpenMaterial по id " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -188,7 +188,7 @@ public class OpenMaterialController {
 
 
         openMaterialRepository.deleteByStudentId(studentId);
-        logger.info("Удаление всех OpenMaterial по " + studentId);
+        logger.info("Удаление всех OpenMaterial по studentId " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -200,7 +200,7 @@ public class OpenMaterialController {
         }
 
         openMaterialRepository.deleteByMaterialId(materialId);
-        logger.info("Удаление всех OpenMaterial по " + materialId);
+        logger.info("Удаление всех OpenMaterial по materialId" + materialId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

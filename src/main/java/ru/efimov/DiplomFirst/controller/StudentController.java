@@ -65,7 +65,7 @@ public class StudentController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        logger.info("Получение Student по" + id);
+        logger.info("Получение Student по id " + id);
         return new ResponseEntity<>(student, HttpStatus.OK);
     }
 
@@ -90,7 +90,7 @@ public class StudentController {
         _student.setPassword(student.getPassword());
         _student.setDate_of_registration(student.getDate_of_registration());
 
-        logger.info("Обновление Student по" + id);
+        logger.info("Обновление Student по id " + id);
 
         return new ResponseEntity<>(studentRepository.save(_student), HttpStatus.OK);
     }
@@ -107,7 +107,7 @@ public class StudentController {
 
         studentRepository.deleteById(id);
 
-        logger.info("Удаление Student по" + id);
+        logger.info("Удаление Student по id " + id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

@@ -48,7 +48,7 @@ public class ExitController {
 
 
         List<Exit> exits = exitRepository.findByStudentId(studentId);
-        logger.info("Получение всех объектов Enter по " + studentId);
+        logger.info("Получение всех объектов Enter по studentId " + studentId);
         return new ResponseEntity<>(exits, HttpStatus.OK);
     }
 
@@ -65,7 +65,7 @@ public class ExitController {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
 
-        logger.info("Получение объекта Enter по " + id);
+        logger.info("Получение объекта Enter по id " + id);
         return new ResponseEntity<>(exit, HttpStatus.OK);
     }
 
@@ -86,7 +86,7 @@ public class ExitController {
             return exitRepository.save(exitRequest);
         }).orElseThrow(() -> new ResourceNotFoundException("Not found Student with id = " + studentId));
 
-        logger.info("Создание объекта Enter по " + studentId);
+        logger.info("Создание объекта Enter по studentId " + studentId);
         return new ResponseEntity<>(exit, HttpStatus.CREATED);
     }
 
@@ -105,7 +105,7 @@ public class ExitController {
 
         exit.setDate_of_exit(exitRequest.getDate_of_exit());
 
-        logger.info("Обновление объекта Enter по " + id);
+        logger.info("Обновление объекта Enter по id " + id);
         return new ResponseEntity<>(exitRepository.save(exit), HttpStatus.OK);
     }
 
@@ -124,7 +124,7 @@ public class ExitController {
 
         exitRepository.deleteById(id);
 
-        logger.info("Удаление объекта Enter по " + id);
+        logger.info("Удаление объекта Enter по id " + id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
@@ -145,7 +145,7 @@ public class ExitController {
 
 
         exitRepository.deleteByStudentId(studentId);
-        logger.info("Удаление всех Enter по " + studentId);
+        logger.info("Удаление всех Enter по studentId " + studentId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
