@@ -62,7 +62,7 @@ public class TaskController {
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         try {
             Task _task = taskRepository
-                    .save(new Task(task.getTitle(), task.getDescription()));
+                    .save(new Task(task.getTitle(), task.getDescription(), task.getCreation_time(), task.getDeadline()));
             logger.info("Создание Task");
             return new ResponseEntity<>(_task, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -79,6 +79,8 @@ public class TaskController {
             Task _task = taskData.get();
             _task.setTitle(task.getTitle());
             _task.setDescription(task.getDescription());
+            _task.setDeadline(task.getDeadline());
+            _task.setCreation_time(task.getCreation_time());
 
             logger.info("Обновление Task по id " + id);
             return new ResponseEntity<>(taskRepository.save(_task), HttpStatus.OK);

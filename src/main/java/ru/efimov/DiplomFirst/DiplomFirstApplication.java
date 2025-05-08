@@ -40,6 +40,11 @@ http://localhost:8083/api/materials/1
 http://localhost:8083/api/materials?title=title2
 
 
+{
+    "type": "Bearer",
+    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJKb2huIiwiZXhwIjoxNzQ3NzUyNDU3LCJyb2xlcyI6WyJVU0VSIl19.pokYofOQIdVNwzA03EW7v0eUPHrCxLxh6rl2qBwHUaoZSnAc742GU3HPltLOYDQyA2eKjZPSI1ZgdFsnjmTrBA",
+    "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJKb2huIiwiZXhwIjoxNzcxMDgwNDU3fQ.fCbFXQq-2lkBk8RHpx2L4STNSLKc6lUsjC_Pl38BpkQOZRVwz7Tu7XdVSV7O70tL9d9Nq-QCceB5D8xatVIW1Q"
+}
 
 
 

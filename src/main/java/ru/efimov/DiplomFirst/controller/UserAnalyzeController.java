@@ -20,6 +20,8 @@ import org.apache.logging.log4j.Logger;
 @RequestMapping("/api")
 public class UserAnalyzeController {
     @Autowired
+    private TaskRepository taskRepository;
+    @Autowired
     private MaterialRepository materialRepository;
     @Autowired
     private StudentRepository studentRepository;
@@ -215,19 +217,24 @@ public class UserAnalyzeController {
             }
         }
 
-        long totalTimeRepairErrors = 0;
+        double totalTimeRepairErrors = 0;
         long totalCountRepairErrors = 0;
 
         for (Long failedTaskId : mapTimesPerTask.keySet()){
             List<LocalDateTime> sortedList = mapTimesPerTask.get(failedTaskId);
             Collections.sort(sortedList);
 
+            Optional<Task> currentTask = taskRepository.findById(failedTaskId);
+            Task _task = currentTask.get();
+
+            long minutesForWork = ChronoUnit.MINUTES.between(_task.getCreation_time(), _task.getDeadline());
+
             for (int i=1;i < sortedList.size();i++){
                 LocalDateTime prevTime = sortedList.get(i-1);
                 LocalDateTime curTime = sortedList.get(i);
 
                 long minutes = ChronoUnit.MINUTES.between(prevTime, curTime);
-                totalTimeRepairErrors += minutes;
+                totalTimeRepairErrors += (double) minutes / minutesForWork;
                 totalCountRepairErrors += 1;
 
             }
@@ -289,13 +296,19 @@ public class UserAnalyzeController {
         }
 
         List<TaskPassed> taskPasseds = taskPassedRepository.findByStudentId(studentId);
-        long totalTimeBetweenFirstTryAndPassed = 0;
+        double totalTimeBetweenFirstTryAndPassed = 0;
         long totalCountBetweenFirstTryAndPassed = 0;
 
         for (TaskPassed t1 : taskPasseds){
             if (mapTimeBetweenFirstTryAndPassed.containsKey(t1.getTask().getId())){
+
+                Optional<Task> currentTask = taskRepository.findById(t1.getTask().getId());
+                Task _task = currentTask.get();
+
+                long minutesForWork = ChronoUnit.MINUTES.between(_task.getCreation_time(), _task.getDeadline());
+
                 long minutes = ChronoUnit.MINUTES.between(mapTimeBetweenFirstTryAndPassed.get(t1.getTask().getId()), t1.getDate_of_passed());
-                totalTimeBetweenFirstTryAndPassed += minutes;
+                totalTimeBetweenFirstTryAndPassed += (double) minutes / minutesForWork;
                 totalCountBetweenFirstTryAndPassed += 1;
              //   System.out.println("in passed -" + minutes);
              //   System.out.println(t1.getDate_of_passed());

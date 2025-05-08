@@ -5,15 +5,14 @@ import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ru.efimov.DiplomFirst.entity.MaterialAnalyze;
-import ru.efimov.DiplomFirst.entity.TaskAnalyze;
-import ru.efimov.DiplomFirst.entity.TaskError;
-import ru.efimov.DiplomFirst.entity.TaskPassed;
+import ru.efimov.DiplomFirst.entity.*;
 import ru.efimov.DiplomFirst.repository.*;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -65,11 +64,13 @@ public class TaskAnalyzeController {
         TaskAnalyze oldTaskAnalyze = taskAnalyzes.get(0);
 
         TaskAnalyze newTaskAnalyze = new TaskAnalyze();
-        newTaskAnalyze.setDeadline(oldTaskAnalyze.getDeadline());
+
         newTaskAnalyze.setId(oldTaskAnalyze.getId());
         newTaskAnalyze.setTask(oldTaskAnalyze.getTask());
-        newTaskAnalyze.setCreation_time(oldTaskAnalyze.getCreation_time());
 
+
+        Optional<Task> currentTask = taskRepository.findById(taskId);
+        Task _task = currentTask.get();
 
         List<TaskError> taskErrors = taskErrorRepository.findByTaskId(taskId);
         int lengthList = taskErrors.size();
@@ -93,16 +94,16 @@ public class TaskAnalyzeController {
 
         for(TaskPassed t1 : taskPasseds){
             LocalDateTime l1 = t1.getDate_of_passed();
-            if (l1.compareTo(newTaskAnalyze.getDeadline()) > 0){
+            if (l1.compareTo(_task.getDeadline()) > 0){
                 continue;
             }
-            if (l1.compareTo(newTaskAnalyze.getCreation_time()) < 0){
+            if (l1.compareTo(_task.getCreation_time()) < 0){
                 continue;
             }
 
-            long minutes = ChronoUnit.MINUTES.between(newTaskAnalyze.getCreation_time(), l1);
+            long minutes = ChronoUnit.MINUTES.between(_task.getCreation_time(), l1);
 
-            long minutesUnderDeadline = ChronoUnit.MINUTES.between(newTaskAnalyze.getCreation_time(), newTaskAnalyze.getDeadline());
+            long minutesUnderDeadline = ChronoUnit.MINUTES.between(_task.getCreation_time(), _task.getDeadline());
             System.out.println(minutes);
             System.out.println(minutesUnderDeadline);
             System.out.println(l1);
@@ -163,8 +164,7 @@ public class TaskAnalyzeController {
                 .orElseThrow(() -> new ResourceNotFoundException("TaskAnalyzeId " + id + "not found"));
 
         taskAnalyze.setMean_time(taskAnalyzeRequest.getMean_time());
-        taskAnalyze.setCreation_time(taskAnalyzeRequest.getCreation_time());
-        taskAnalyze.setDeadline(taskAnalyzeRequest.getDeadline());
+
         taskAnalyze.setCount_error(taskAnalyzeRequest.getCount_error());
 
         logger.info("Обновление TaskAnalyze по id " + id);

@@ -32,20 +32,13 @@ public class TaskAnalyze {
     @Column(nullable = false)
     private Float mean_time;
 
-    @Column(nullable = false)
-    private LocalDateTime creation_time;
-
-    @Column(nullable = false)
-    private LocalDateTime deadline;
 
     @Column(nullable = false)
     private Float count_error;
 
-    public TaskAnalyze(Task task, Float mean_time, LocalDateTime creation_time, LocalDateTime deadline, Float count_error) {
+    public TaskAnalyze(Task task, Float mean_time, Float count_error) {
         this.task = task;
         this.mean_time = mean_time;
-        this.creation_time = creation_time;
-        this.deadline = deadline;
         this.count_error = count_error;
     }
 }
