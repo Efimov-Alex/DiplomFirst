@@ -79,7 +79,7 @@ public class MaterialAnalyzeController {
             }
         }
 
-        long totalTimeSum = 0;
+        double totalTimeSum = 0;
         long timeCount = 0;
 
         for (CloseMaterial o1 : closeMaterials){
@@ -98,11 +98,10 @@ public class MaterialAnalyzeController {
                 if (o2.getDate_of_open().compareTo(o1.getDate_of_close()) > 0){
                     continue;
                 }
+                Optional<Material> curMaterial = materialRepository.findById(o2.getMaterial().getId());
                 long minutes = ChronoUnit.MINUTES.between(o2.getDate_of_open(), o1.getDate_of_close());
-                System.out.println(minutes);
-                System.out.println(o2.getDate_of_open());
-                System.out.println(o1.getDate_of_close());
-                totalTimeSum += minutes;
+
+                totalTimeSum += (float) minutes / curMaterial.get().getTime_for_learning();
                 timeCount += 1;
             }
         }

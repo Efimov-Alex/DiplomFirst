@@ -104,9 +104,6 @@ public class TaskAnalyzeController {
             long minutes = ChronoUnit.MINUTES.between(_task.getCreation_time(), l1);
 
             long minutesUnderDeadline = ChronoUnit.MINUTES.between(_task.getCreation_time(), _task.getDeadline());
-            System.out.println(minutes);
-            System.out.println(minutesUnderDeadline);
-            System.out.println(l1);
             totalTimeSum += (double) minutes / minutesUnderDeadline;
             timeCount += 1;
 
@@ -118,8 +115,7 @@ public class TaskAnalyzeController {
             throw new ResourceNotFoundException("Not found TaskPassed");
         }
 
-        System.out.println(totalTimeSum);
-        System.out.println(timeCount);
+
 
         float averageTime = (float) totalTimeSum / timeCount;
         newTaskAnalyze.setMean_time(averageTime);

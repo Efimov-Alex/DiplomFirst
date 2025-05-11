@@ -58,7 +58,7 @@ public class MaterialController {
     public ResponseEntity<Material> createMaterial(@RequestBody Material material) {
         try {
             Material _material = materialRepository
-                    .save(new Material(material.getTitle(), material.getDescription()));
+                    .save(new Material(material.getTitle(), material.getDescription(), material.getTime_for_learning()));
             logger.info("Создание объекта Material");
             return new ResponseEntity<>(_material, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -75,6 +75,7 @@ public class MaterialController {
             Material _material = materialData.get();
             _material.setTitle(material.getTitle());
             _material.setDescription(material.getDescription());
+            _material.setTime_for_learning(material.getTime_for_learning());
 
             logger.info("Обновление Material по id " + id);
             return new ResponseEntity<>(materialRepository.save(_material), HttpStatus.OK);

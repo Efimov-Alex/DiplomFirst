@@ -143,21 +143,21 @@ public class TaskErrorController {
 
         if (listTaskErrorByUser.size() >= 10){
             if ( 4 * taskError.getCount_errors() >= 3 * Double.parseDouble(userAnalyzeCountErrors.getValue()) && taskError.getCount_errors() <= 5 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
-                System.out.println("Значение в пределах нормы");
+
                 TaskError _taskError = taskErrorRepository.save(taskError);
                 logger.info("Создание TaskError");
                 logger.info("Значение в пределах нормы");
                 return new ResponseEntity<>(_taskError, HttpStatus.CREATED);
             }
             else if (2 * taskError.getCount_errors() <  Double.parseDouble(userAnalyzeCountErrors.getValue()) || taskError.getCount_errors() > 3 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
-                System.out.println("Значение сильно отличаются, это другой человек.");
+
                 logger.error("Создание TaskError");
                 logger.error("Значение сильно отличаются, это другой человек");
                 return new ResponseEntity<>(taskError, HttpStatus.INTERNAL_SERVER_ERROR);
                 //TaskError _taskError = taskErrorRepository.save(taskError);
             }
             else {
-                System.out.println("Значение в отличаюся от нормальных, но не сильно.");
+
                 TaskError _taskError = taskErrorRepository.save(taskError);
                 logger.info("Создание TaskError");
                 logger.info("Значение в отличаюся от нормальных, но не сильно");
@@ -167,7 +167,7 @@ public class TaskErrorController {
 
 
         else {
-            System.out.println("Мало данных, чтобы понять другой ли это пользователь.");
+
             TaskError _taskError = taskErrorRepository.save(taskError);
             logger.info("Создание TaskError");
             logger.info("Мало данных, чтобы понять другой ли это пользователь");

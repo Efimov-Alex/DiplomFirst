@@ -24,8 +24,12 @@ public class Material {
     private String title;
     private String description;
 
-    public Material(String title, String description) {
+    @Column(nullable = false)
+    private Integer time_for_learning;
+
+    public Material(String title, String description, Integer time_for_learning) {
         this.title = title;
         this.description = description;
+        this.time_for_learning = time_for_learning;
     }
 }

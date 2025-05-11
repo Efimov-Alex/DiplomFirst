@@ -156,21 +156,21 @@ public class TaskPassedController {
 
 
         if ( 4 * listTaskErrorsByStudentAndTasks.size() >= 3 * Double.parseDouble(userAnalyzeCountErrors.getValue()) && listTaskErrorsByStudentAndTasks.size() <= 5 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
-            System.out.println("Значение в пределах нормы");
+
             TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
             logger.info("Значение в пределах нормы");
             logger.info("Создание TaskPassed");
             return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
         }
         else if (2 * listTaskErrorsByStudentAndTasks.size() <  Double.parseDouble(userAnalyzeCountErrors.getValue()) || listTaskErrorsByStudentAndTasks.size() > 3 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
-            System.out.println("Значение сильно отличаются, это другой человек.");
+
             logger.error("Значение сильно отличаются, это другой человек");
             logger.error("Создание TaskPassed");
             return new ResponseEntity<>(taskPassed, HttpStatus.CREATED);
             //TaskError _taskError = taskErrorRepository.save(taskError);
         }
         else {
-            System.out.println("Значение в отличаюся от нормальных, но не сильно.");
+
             logger.info("Значение в отличаюся от нормальных, но не сильно");
             logger.info("Создание TaskPassed");
             TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
