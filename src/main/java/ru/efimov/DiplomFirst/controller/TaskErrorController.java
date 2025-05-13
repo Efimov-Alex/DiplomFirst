@@ -132,7 +132,7 @@ public class TaskErrorController {
         List<UserAnalyze> listUserAnalyze = userAnalyzeRepository.findByStudentId(studentId);
         UserAnalyze userAnalyzeCountErrors = null;
         for (UserAnalyze userAnalyze : listUserAnalyze){
-            if (userAnalyze.getCharacteristic().contains("Колличество ошибок")){
+            if (userAnalyze.getCharacteristic().contains("Количество ошибок")){
                 userAnalyzeCountErrors = userAnalyze;
             }
         }

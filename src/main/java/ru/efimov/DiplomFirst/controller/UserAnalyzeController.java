@@ -75,7 +75,7 @@ public class UserAnalyzeController {
         UserAnalyze newUserAnalyzeErrors = null;
 
         for (UserAnalyze u1 : userAnalyzes){
-            if (u1.getCharacteristic().equals("Колличество ошибок")){
+            if (u1.getCharacteristic().equals("Количество ошибок")){
                 newUserAnalyzeErrors = new UserAnalyze();
                 newUserAnalyzeErrors.setId(u1.getId());
                 newUserAnalyzeErrors.setStudent(u1.getStudent());
@@ -85,8 +85,8 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeErrors == null){
-            logger.error("Not found userAnalyze with Characteristic = " + "Колличество ошибок");
-            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Колличество ошибок");
+            logger.error("Not found userAnalyze with Characteristic = " + "Количество ошибок");
+            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Количество ошибок");
         }
 
 
@@ -122,7 +122,7 @@ public class UserAnalyzeController {
         UserAnalyze newUserAnalyzeFailAttempts= null;
 
         for (UserAnalyze u1 : userAnalyzes){
-            if (u1.getCharacteristic().equals("Колличество попыток перед сдачей")){
+            if (u1.getCharacteristic().equals("Количество попыток перед сдачей")){
                 newUserAnalyzeFailAttempts = new UserAnalyze();
                 newUserAnalyzeFailAttempts.setId(u1.getId());
                 newUserAnalyzeFailAttempts.setStudent(u1.getStudent());
@@ -132,8 +132,8 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeFailAttempts == null){
-            logger.error("Not found userAnalyze with Characteristic = " + "Колличество попыток перед сдачей");
-            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Колличество попыток перед сдачей");
+            logger.error("Not found userAnalyze with Characteristic = " + "Количество попыток перед сдачей");
+            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Количество попыток перед сдачей");
         }
 
         for (TaskError t1 : taskErrors){
@@ -173,7 +173,7 @@ public class UserAnalyzeController {
         UserAnalyze newUserAnalyzeTimesRepairError = null;
 
         for (UserAnalyze u1 : userAnalyzes){
-            if (u1.getCharacteristic().equals("Время между неуспешными попытками")){
+            if (u1.getCharacteristic().equals("Время между неуспешными попытками относительно времени от выдачи задания до дедлайна")){
                 newUserAnalyzeTimesRepairError = new UserAnalyze();
                 newUserAnalyzeTimesRepairError.setId(u1.getId());
                 newUserAnalyzeTimesRepairError.setStudent(u1.getStudent());
@@ -183,8 +183,8 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeTimesRepairError == null){
-            logger.error("Not found userAnalyze with Characteristic = " + "Время между неуспешными попытками");
-            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время между неуспешными попытками");
+            logger.error("Not found userAnalyze with Characteristic = " + "Время между неуспешными попытками относительно времени от выдачи задания до дедлайна");
+            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время между неуспешными попытками относительно времени от выдачи задания до дедлайна");
         }
 
 
@@ -263,7 +263,7 @@ public class UserAnalyzeController {
         UserAnalyze newUserAnalyzeTimeBetweenFirstTryAndPassed = null;
 
         for (UserAnalyze u1 : userAnalyzes){
-            if (u1.getCharacteristic().equals("Время на исправление ошибок")){
+            if (u1.getCharacteristic().equals("Время на исправление ошибок относительно времени от выдачи задания до дедлайна")){
                 newUserAnalyzeTimeBetweenFirstTryAndPassed = new UserAnalyze();
                 newUserAnalyzeTimeBetweenFirstTryAndPassed.setId(u1.getId());
                 newUserAnalyzeTimeBetweenFirstTryAndPassed.setStudent(u1.getStudent());
@@ -273,8 +273,8 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeTimeBetweenFirstTryAndPassed == null){
-            logger.error("Not found userAnalyze with Characteristic = " + "Время на исправление ошибок");
-            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время на исправление ошибок");
+            logger.error("Not found userAnalyze with Characteristic = " + "Время на исправление ошибок относительно времени от выдачи задания до дедлайна");
+            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время на исправление ошибок относительно времени от выдачи задания до дедлайна");
         }
 
         HashMap<Long, LocalDateTime> mapTimeBetweenFirstTryAndPassed= new HashMap<>();
@@ -345,7 +345,7 @@ public class UserAnalyzeController {
         UserAnalyze newUserAnalyzeTimeOnMaterials = null;
 
         for (UserAnalyze u1 : userAnalyzes){
-            if (u1.getCharacteristic().equals("Время на чтение материалов")){
+            if (u1.getCharacteristic().equals("Время на чтение материалов относительно времени на изучение материала")){
                 newUserAnalyzeTimeOnMaterials = new UserAnalyze();
                 newUserAnalyzeTimeOnMaterials.setId(u1.getId());
                 newUserAnalyzeTimeOnMaterials.setStudent(u1.getStudent());
@@ -355,8 +355,8 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeTimeOnMaterials == null){
-            logger.error("Not found userAnalyze with Characteristic = " + "Время на чтение материалов");
-            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время на чтение материалов");
+            logger.error("Not found userAnalyze with Characteristic = " + "Время на чтение материалов относительно времени на изучение материала");
+            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время на чтение материалов относительно времени на изучение материала");
         }
 
         List<OpenMaterial> openMaterials = openMaterialRepository.findByStudentId(studentId);
@@ -443,7 +443,7 @@ public class UserAnalyzeController {
         UserAnalyze newUserAnalyzeTimeOnEnter = null;
 
         for (UserAnalyze u1 : userAnalyzes){
-            if (u1.getCharacteristic().equals("Время на чтение сессии")){
+            if (u1.getCharacteristic().equals("Время на сессию")){
                 newUserAnalyzeTimeOnEnter = new UserAnalyze();
                 newUserAnalyzeTimeOnEnter.setId(u1.getId());
                 newUserAnalyzeTimeOnEnter.setStudent(u1.getStudent());
@@ -453,8 +453,8 @@ public class UserAnalyzeController {
         }
 
         if (newUserAnalyzeTimeOnEnter == null){
-            logger.error("Not found userAnalyze with Characteristic = " + "Время на чтение материалов");
-            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время на чтение материалов");
+            logger.error("Not found userAnalyze with Characteristic = " + "Время на сессию");
+            throw new ResourceNotFoundException("Not found userAnalyze with Characteristic = " + "Время на сессию");
         }
 
         List<Enter> enters = enterRepository.findByStudentId(studentId);

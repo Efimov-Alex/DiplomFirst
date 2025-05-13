@@ -13,11 +13,25 @@ public class DiplomFirstApplication {
 }
 
 /*
+29
 {
     "type": "Bearer",
     "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzQ3MjMwNTUwLCJyb2xlcyI6WyJVU0VSIl19.eez-JuAvN7VP2zjawTqWNJTgBt1Z5eGLP4fc7_cMYPg-NzoPOmlYxP7XcrosCuf2M2DDZKgEZphn8XXS1UiTWw",
     "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJBbGV4IiwiZXhwIjoxNzcwNTU4NTUwfQ.sDmqTsFDyoawSLQTpcQWgtS7rTEhG7QKjVS2r32kqwQrmUYH0laBUxgEkzE5wcpHXOshlQgl1OkAxvWoGaMsuA"
 }
+
+118
+{
+    "type": "Bearer",
+    "accessToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJOaWtpdGEiLCJleHAiOjE3NDk3MjQxMTIsInJvbGVzIjpbIlVTRVIiXX0.LmvGfforhgih9bsj2bWAluI1V2pIHqBZvU38OFqLOMvHVrutMXGpoGvC-Q69bWf0BgRcgx7X72waMoGN26y0IQ",
+    "refreshToken": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJOaWtpdGEiLCJleHAiOjE3NzMwNTIxMTJ9.TMOwnW5J_p1srg9XLG8G2anyzy8_MELlkTgZ_u2B2KlGu8ZgCMqhgwEmVTrpzJcYZBCnt14xdlCsPwxh-eyPlg"
+}
+{"date_of_enter":"2025-02-05T13:00:00"}
+
+
+{"date_of_exit":"2025-02-05T14:07:00"}
+
+
 
 http://localhost:8083/api/auth/login
 

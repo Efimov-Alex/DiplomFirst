@@ -136,50 +136,12 @@ public class TaskPassedController {
         TaskPassed taskPassed = new TaskPassed(student, task, taskPassedRequest.getDate_of_passed());
 
 
-        List<TaskError> listTaskErrors = taskErrorRepository.findByStudentId(studentId);
-
-        List<TaskError> listTaskErrorsByStudentAndTasks = new ArrayList<>();
-
-        for (TaskError taskError: listTaskErrors){
-            if (taskError.getTask().getId() == taskId){
-                listTaskErrorsByStudentAndTasks.add(taskError);
-            }
-        }
-
-        List<UserAnalyze> listUserAnalyze = userAnalyzeRepository.findByStudentId(studentId);
-        UserAnalyze userAnalyzeCountErrors = null;
-        for (UserAnalyze userAnalyze : listUserAnalyze){
-            if (userAnalyze.getCharacteristic().contains("Колличество попыток")){
-                userAnalyzeCountErrors = userAnalyze;
-            }
-        }
+        logger.info("Создание TaskPassed");
+        TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
+        return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
 
 
-        if ( 4 * listTaskErrorsByStudentAndTasks.size() >= 3 * Double.parseDouble(userAnalyzeCountErrors.getValue()) && listTaskErrorsByStudentAndTasks.size() <= 5 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
 
-            TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
-            logger.info("Значение в пределах нормы");
-            logger.info("Создание TaskPassed");
-            return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
-        }
-        else if (2 * listTaskErrorsByStudentAndTasks.size() <  Double.parseDouble(userAnalyzeCountErrors.getValue()) || listTaskErrorsByStudentAndTasks.size() > 3 * Double.parseDouble(userAnalyzeCountErrors.getValue())){
-
-            logger.error("Значение сильно отличаются, это другой человек");
-            logger.error("Создание TaskPassed");
-            return new ResponseEntity<>(taskPassed, HttpStatus.CREATED);
-            //TaskError _taskError = taskErrorRepository.save(taskError);
-        }
-        else {
-
-            logger.info("Значение в отличаюся от нормальных, но не сильно");
-            logger.info("Создание TaskPassed");
-            TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
-            return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
-        }
-
-       // TaskPassed _taskPassed = taskPassedRepository.save(taskPassed);
-
-       // return new ResponseEntity<>(_taskPassed, HttpStatus.CREATED);
     }
 
     @PutMapping("/tasksPassed/{id}")
